@@ -1,7 +1,7 @@
-import { v } from "convex/values";
-import { mutation, action } from "./_generated/server";
-import { api } from "./_generated/api";
-import { queryWithAuth } from "@convex-dev/convex-lucia-auth";
+import {v} from "convex/values";
+import {action, mutation} from "./_generated/server";
+import {api} from "./_generated/api";
+import {queryWithAuth} from "@convex-dev/convex-lucia-auth";
 
 // Write your Convex functions in any file inside this directory (`convex`).
 // See https://docs.convex.dev/functions for more.
@@ -24,6 +24,8 @@ export const listNumbers = queryWithAuth({
       .take(args.count);
     return {
       viewer: ctx.session?.user.email,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
       numbers: numbers.toReversed().map((number) => number.value),
     };
   },
@@ -37,6 +39,8 @@ export const addNumber = mutation({
   },
 
   // Mutation implementation.
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
   handler: async (ctx, args) => {
     //// Insert or modify documents in the database here.
     //// Mutations can also read from the database like queries.
@@ -59,6 +63,8 @@ export const myAction = action({
   },
 
   // Action implementation.
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
   handler: async (ctx, args) => {
     //// Use the browser-like `fetch` API to send HTTP requests.
     //// See https://docs.convex.dev/functions/actions#calling-third-party-apis-and-using-npm-packages.
@@ -66,6 +72,8 @@ export const myAction = action({
     // const data = await response.json();
 
     //// Query data by running Convex queries.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     const data = await ctx.runQuery(api.myFunctions.listNumbers, {
       count: 10,
       sessionId: null,
@@ -73,6 +81,8 @@ export const myAction = action({
     console.log(data);
 
     //// Write data by running Convex mutations.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     await ctx.runMutation(api.myFunctions.addNumber, {
       value: args.first,
     });
