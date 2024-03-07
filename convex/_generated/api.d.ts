@@ -14,10 +14,11 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as tasks from "../tasks.js";
+import type * as auth from "../auth.js";
+import type * as myFunctions from "../myFunctions.js";
 
 /**
- * A utility for referencing Convex functions in your app's API.
+ * A utility for referencing Convex functions in your piono's API.
  *
  * Usage:
  * ```js
@@ -25,7 +26,8 @@ import type * as tasks from "../tasks.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  tasks: typeof tasks;
+  auth: typeof auth;
+  myFunctions: typeof myFunctions;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
