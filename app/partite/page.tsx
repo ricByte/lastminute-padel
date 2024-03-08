@@ -37,7 +37,7 @@ const PartitePage: React.FC = () => {
 
     const performMyAction = useAction(api.myFunctions.doSomething);
     const handleClick = () => {
-        performMyAction({ a: 1 });
+        performMyAction();
     };
     return (
         <div className={'partite-container'}>
