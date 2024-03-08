@@ -33,9 +33,14 @@ const PadelPage: React.FC = () => {
     return (
         <div className={'padel-container'}>
             <Menu/>
-            <h1>Padel Page</h1>
-            <p>Welcome to the Padel page of our website!</p>
-            <h2>Groups</h2>
+            <div className={'padel-intro'}>
+                <h1 className={'padel-title'}>Welcome to the Padel Page!</h1>
+                <p className={'padel-text'}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada fringilla justo, id
+                    vestibulum neque facilisis ut.
+                    Nullam nec est non nisi dictum scelerisque. Sed vitae sem id libero sollicitudin dignissim.
+                </p>
+            </div>
             <div>
                 {groups.map((group, index) => (
                     <Group key={index} {...group} />

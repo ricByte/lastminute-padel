@@ -83,6 +83,24 @@
   padding: 20px;
 }
 
+.padel-intro {
+  padding: 20px;
+}
+
+.padel-title {
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.padel-text {
+  color: #555;
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+/*Team*/
+
 .team-container {
   border: 1px solid #ccc;
   border-radius: 5px;
