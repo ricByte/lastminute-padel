@@ -5,7 +5,7 @@ import {api} from "@/convex/_generated/api";
 import "@/app/globals.css";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
-import {useAction} from "convex/react";
+import {useQuery} from "convex/react";
 
 const PartitePage: React.FC = () => {
     const [nowPlaying, setNowPlaying] = useState(false);
@@ -35,9 +35,10 @@ const PartitePage: React.FC = () => {
         // Aggiungi altre partite...
     ];
 
-    const performMyAction = useAction(api.myFunctions.doSomething);
+    // const performMyAction = useAction(api.myFunctions.doSomething);
+    const performMyAction2 = useQuery(api.myFunctions.listImage);
     const handleClick = () => {
-        void performMyAction().then(r => console.log(r));
+        console.log(performMyAction2);
     };
     return (
         <div className={'partite-container'}>
