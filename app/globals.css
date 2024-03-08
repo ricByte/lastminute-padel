@@ -76,3 +76,88 @@
     @apply bg-background text-foreground min-h-full;
   }
 }
+
+.padel-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.team-container {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.team-name {
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+}
+
+.player-list {
+  margin-bottom: 10px;
+}
+
+.player-item {
+  margin-left: 20px;
+}
+
+
+.group-container {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.teams-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 20px;
+}
+
+
+/*Partite*/
+
+.partite-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.partita-item {
+  margin-bottom: 10px;
+}
+
+.partita-details {
+  font-weight: bold;
+}
+
+/*Menu*/
+
+.menu {
+  background-color: #f4f4f4;
+  padding: 10px;
+}
+
+.menuList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menuItem {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.menuItem a {
+  color: #333;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.menuItem a:hover {
+  color: #555;
+}
