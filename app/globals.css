@@ -145,7 +145,10 @@
 }
 
 .partita-item {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
 }
 
 .partita-details {
@@ -154,6 +157,7 @@
 
 .now-playing {
   color: red; /* Colore rosso per la didascalia */
+  font-size: 24px;
   animation: blink 1s infinite; /* Animazione lampeggiante */
 }
 
