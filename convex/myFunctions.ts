@@ -64,6 +64,12 @@ export const readFromGoogle=
   },
 });
 
+export const doSomething = action({
+  args: {},
+  handler: () => {
+    // do something with SomeNpmPackage
+  },
+});
 // You can fetch data from and send data to third-party APIs via an action:
 export const myAction = action({
   // Validators for arguments.

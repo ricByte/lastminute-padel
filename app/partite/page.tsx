@@ -35,14 +35,15 @@ const PartitePage: React.FC = () => {
         // Aggiungi altre partite...
     ];
 
-    const readFromGoogle = useAction(api.myFunctions.readFromGoogle);
+    const performMyAction = useAction(api.myFunctions.doSomething);
+    const handleClick = () => {
+        performMyAction({ a: 1 });
+    };
     return (
         <div className={'partite-container'}>
             <h1>Partite</h1>
             <Button
-                onClick={() => {
-                    void readFromGoogle();
-                }}
+                onClick={handleClick}
             >
                 Add a random number
             </Button>
