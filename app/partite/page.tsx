@@ -11,9 +11,9 @@ const PartitePage: React.FC = () => {
         // Controlla l'orario corrente e imposta lo stato di nowPlaying
         const interval = setInterval(() => {
             const now = new Date();
-            const currentHour = now.getHours();
-            // Imposta nowPlaying se l'orario è tra le 8:00 e le 9:00 (ad esempio)
-            setNowPlaying(currentHour >= 11 && currentHour < 13);
+
+            const isBetween = now >= partite[0].startDate && now <= partite[0].endDate;
+            setNowPlaying(isBetween);
         }, 1000); // Controlla ogni secondo
 
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
@@ -26,6 +26,8 @@ const PartitePage: React.FC = () => {
             punteggioSquadra1: 2,
             punteggioSquadra2: 1,
             vincitore: 'Team A', // Aggiungi il vincitore della partita
+            startDate: new Date(2024, 2, 8, 8, 0),
+            endDate: new Date(2024, 2, 12, 17, 0),
         },
         // Aggiungi altre partite...
     ];
@@ -37,11 +39,12 @@ const PartitePage: React.FC = () => {
                 {partite.map((partita, index) => (
                     <div key={index} className={'partita-item'}>
                         <p className={'partita-details'}>
-                            {partita.squadra1} vs {partita.squadra2}
+                            {partita.squadra1} vs {partita.squadra2} @{partita.startDate.toLocaleString()}
                         </p>
                         <p className={'partita-details'}>
                             {partita.punteggioSquadra1} - {partita.punteggioSquadra2}
-                            {nowPlaying && <span className={'now-playing'}>Now Playing</span>} {/* Didascalia "Now Playing" se nell'orario indicato */}
+                            {nowPlaying && <span
+                                className={'now-playing'}>Now Playing</span>} {/* Didascalia "Now Playing" se nell'orario indicato */}
                         </p>
                         <p>Vincitore: {partita.vincitore}</p> {/* Mostra il vincitore */}
                     </div>
