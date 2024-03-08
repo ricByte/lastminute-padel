@@ -152,6 +152,17 @@
   font-weight: bold;
 }
 
+.now-playing {
+  color: red; /* Colore rosso per la didascalia */
+  animation: blink 1s infinite; /* Animazione lampeggiante */
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
 /*Menu*/
 
 .menu {
