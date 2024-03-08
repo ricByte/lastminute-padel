@@ -9,7 +9,7 @@ import Menu from "@/components/Menu";
 const PadelPage: React.FC = () => {
     const groups = [
         {
-            groupName: 'Group A',
+            groupName: 'Girone 1',
             teams: [
                 { name: 'Team A1', players: ['Player 1', 'Player 2'], ranking: 'Low' },
                 { name: 'Team A2', players: ['Player 3', 'Player 4'], ranking: 'Intermediate' },
@@ -17,7 +17,7 @@ const PadelPage: React.FC = () => {
             ],
         },
         {
-            groupName: 'Group B',
+            groupName: 'Girone 2',
             teams: [
                 { name: 'Team B1', players: ['Player 5', 'Player 6'], ranking: 'Intermediate' },
                 { name: 'Team B2', players: ['Player 7', 'Player 8'], ranking: 'High' },
@@ -34,11 +34,9 @@ const PadelPage: React.FC = () => {
         <div className={'padel-container'}>
             <Menu/>
             <div className={'padel-intro'}>
-                <h1 className={'padel-title'}>Welcome to the Padel Page!</h1>
+                <h1 className={'padel-title'}>Benvenuti al sito ufficiale del torneo di padel lastminute 2024 !</h1>
                 <p className={'padel-text'}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce malesuada fringilla justo, id
-                    vestibulum neque facilisis ut.
-                    Nullam nec est non nisi dictum scelerisque. Sed vitae sem id libero sollicitudin dignissim.
+                    Qui potrete trovare i team con i relativi gironi
                 </p>
             </div>
             <div>
