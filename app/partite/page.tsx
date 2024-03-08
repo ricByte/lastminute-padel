@@ -37,10 +37,13 @@ const PartitePage: React.FC = () => {
                 {partite.map((partita, index) => (
                     <div key={index} className={'partita-item'}>
                         <p className={'partita-details'}>
-                            {partita.squadra1} vs {partita.squadra2}: {partita.punteggioSquadra1} - {partita.punteggioSquadra2}
+                            {partita.squadra1} vs {partita.squadra2}
+                        </p>
+                        <p className={'partita-details'}>
+                            {partita.punteggioSquadra1} - {partita.punteggioSquadra2}
+                            {nowPlaying && <span className={'now-playing'}>Now Playing</span>} {/* Didascalia "Now Playing" se nell'orario indicato */}
                         </p>
                         <p>Vincitore: {partita.vincitore}</p> {/* Mostra il vincitore */}
-                        {nowPlaying && <p className={'now-playing'}>Now Playing</p>} {/* Didascalia "Now Playing" se nell'orario indicato */}
                     </div>
                 ))}
             </div>

@@ -157,8 +157,8 @@
 
 .now-playing {
   color: red; /* Colore rosso per la didascalia */
-  font-size: 24px;
   animation: blink 1s infinite; /* Animazione lampeggiante */
+  margin-left: 10px
 }
 
 @keyframes blink {
