@@ -1,8 +1,11 @@
 "use client";
 
 import React, {useEffect, useState} from 'react';
+import {api} from "@/convex/_generated/api";
 import "@/app/globals.css";
 import Link from "next/link";
+import {Button} from "@/components/ui/button";
+import {useAction} from "convex/react";
 
 const PartitePage: React.FC = () => {
     const [nowPlaying, setNowPlaying] = useState(false);
@@ -32,9 +35,17 @@ const PartitePage: React.FC = () => {
         // Aggiungi altre partite...
     ];
 
+    const readFromGoogle = useAction(api.myFunctions.readFromGoogle);
     return (
         <div className={'partite-container'}>
             <h1>Partite</h1>
+            <Button
+                onClick={() => {
+                    void readFromGoogle();
+                }}
+            >
+                Add a random number
+            </Button>
             <div className={'partita-grid'}>
                 {partite.map((partita, index) => (
                     <div key={index} className={'partita-item'}>

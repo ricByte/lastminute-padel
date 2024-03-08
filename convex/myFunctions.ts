@@ -54,6 +54,16 @@ export const addNumber = mutation({
   },
 });
 
+export const readFromGoogle=
+    action({
+  handler: () => {
+    // implementation goes here
+
+    // optionally return a value
+    return "success";
+  },
+});
+
 // You can fetch data from and send data to third-party APIs via an action:
 export const myAction = action({
   // Validators for arguments.
