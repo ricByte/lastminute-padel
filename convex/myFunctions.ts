@@ -2,7 +2,6 @@ import {v} from "convex/values";
 import {action, mutation, query} from "./_generated/server";
 import {api} from "./_generated/api";
 import {queryWithAuth} from "@convex-dev/convex-lucia-auth";
-import {google} from "googleapis";
 
 // Write your Convex functions in any file inside this directory (`convex`).
 // See https://docs.convex.dev/functions for more.
@@ -62,34 +61,6 @@ export const readFromGoogle=
 
     // optionally return a value
     return "success";
-  },
-});
-
-export const doSomething = action({
-  args: {},
-  handler: async () => {
-    try {
-      const auth = new google.auth.GoogleAuth({
-
-        scopes: ['https://www.googleapis.com/auth/documents.readonly'],
-      });
-      const docs = google.docs({version: 'v1', auth});
-
-      // ID del documento di Google Docs
-      const documentId = 'YOUR_DOCUMENT_ID';
-
-      // Ottieni il contenuto del documento
-      const response = await docs.documents.get({
-        documentId,
-      });
-
-      // Invia il contenuto come risposta
-      return response.data;
-    } catch (e) {
-      console.log("error")
-      console.log(e)
-    }
-    return "KO"
   },
 });
 
