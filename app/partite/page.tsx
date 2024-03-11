@@ -80,20 +80,23 @@ const PartitePage: React.FC = () => {
         <div className={'partite-container'}>
             <h1>Partite di oggi</h1>
             <div className={'partita-grid'}>
-                {gamesForToday?.map((partita, index) => (
-                    <div key={index} className={'partita-item'}>
-                        <p className={'partita-details'}>
-                            {partita.team1} vs {partita.team2} @{partita.startDate.toLocaleString()}
-                        </p>
-                        <p className={'partita-details'}>
-                            {partita.pointsTeam1} - {partita.pointsTeam2}
-                            {nowPlaying && <span
-                                className={'now-playing'}>Now Playing</span>} {/* Didascalia "Now Playing" se nell'orario indicato */}
-                        </p>
-                        <p>Vincitore: {partita.winner}</p> {/* Mostra il vincitore */}
-                        <Button onClick={()=>updateGameOnClick(partita._id)}>Aggiungi winner</Button>
-                    </div>
-                ))}
+                {gamesForToday?.map((partita, index) => {
+                    const startDate = new Date(partita.startDate);
+                    return (
+                        <div key={index} className={'partita-item'}>
+                            <p className={'partita-details'}>
+                                {partita.team1} vs {partita.team2} @{startDate.toLocaleString()}
+                            </p>
+                            <p className={'partita-details'}>
+                                {partita.pointsTeam1} - {partita.pointsTeam2}
+                                {nowPlaying && <span
+                                    className={'now-playing'}>Now Playing</span>} {/* Didascalia "Now Playing" se nell'orario indicato */}
+                            </p>
+                            <p>Vincitore: {partita.winner}</p> {/* Mostra il vincitore */}
+                            <Button onClick={() => updateGameOnClick(partita._id)}>Aggiungi winner</Button>
+                        </div>
+                    );
+                })}
             </div>
             <Link href="/">Torna alla home</Link>
         </div>
