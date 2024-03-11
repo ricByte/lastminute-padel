@@ -5,6 +5,7 @@ import {api} from "@/convex/_generated/api";
 import "@/app/globals.css";
 import Link from "next/link";
 import {useAction} from "convex/react";
+import {Button} from "@/components/ui/button";
 import {Id} from "@/convex/_generated/dataModel";
 import {PersistedGame} from "@/convex/myFunctions";
 
@@ -92,6 +93,7 @@ const PartitePage: React.FC = () => {
                                     className={'now-playing'}>Now Playing</span>} {/* Didascalia "Now Playing" se nell'orario indicato */}
                             </p>
                             <p>Vincitore: {partita.winner}</p> {/* Mostra il vincitore */}
+                            <Button onClick={() => updateGameOnClick(partita._id)}>Aggiungi winner</Button>
                         </div>
                     );
                 })}
