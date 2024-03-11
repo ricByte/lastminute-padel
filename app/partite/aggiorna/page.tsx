@@ -73,36 +73,36 @@ const PartitePage: React.FC = () => {
      }
 
     const handleWinnerInputChange = (index: number)=>(event: React.ChangeEvent<HTMLInputElement>) => {
-         if (gamesForToday)
-        setGamesForToday([
-            ...gamesForToday,
-            {
-                ...gamesForToday[index],
-                winner: event.target.value
-            }
-        ])
+        if (gamesForToday)
+        {
+            const persistedGames = [
+                ...gamesForToday,
+            ];
+            persistedGames[index].winner = event.target.value
+            setGamesForToday(persistedGames)
+        }
     };
 
     const handlePt1InputChange = (index: number)=>(event: React.ChangeEvent<HTMLInputElement>) => {
-         if (gamesForToday)
-        setGamesForToday([
-            ...gamesForToday,
-            {
-                ...gamesForToday[index],
-                pointsTeam2: parseInt(event.target.value)
-            }
-        ])
+        if (gamesForToday)
+        {
+            const persistedGames = [
+                ...gamesForToday,
+            ];
+            persistedGames[index].pointsTeam1 = parseInt(event.target.value)
+            setGamesForToday(persistedGames)
+        }
     };
 
     const handlePt2InputChange = (index: number)=>(event: React.ChangeEvent<HTMLInputElement>) => {
          if (gamesForToday)
-        setGamesForToday([
-            ...gamesForToday,
-            {
-                ...gamesForToday[index],
-                pointsTeam2: parseInt(event.target.value)
-            }
-        ])
+        {
+            const persistedGames = [
+                ...gamesForToday,
+            ];
+            persistedGames[index].pointsTeam2 = parseInt(event.target.value)
+            setGamesForToday(persistedGames)
+        }
     };
     // const performMyAction = useMutation(api.myFunctions.addGames);
     // const addGame = () => {
