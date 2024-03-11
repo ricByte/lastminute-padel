@@ -29,7 +29,7 @@ export default defineSchema(
             v.object({
                 name:v.string(),
                 members: v.array(v.string()),
-                id: v.string()
+                id: v.optional(v.string())
             })
         )
     })

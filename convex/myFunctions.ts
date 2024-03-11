@@ -15,7 +15,7 @@ export type PersistedGroup = {
     _id: Id<"groups">;
     _creationTime: number;
     name: string
-    teams: { name: string; members: string[]; }[];
+    teams: { name: string; members: string[]; id?: string }[];
 }
 
 export type PersistedGame = {
