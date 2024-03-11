@@ -6,14 +6,10 @@ import "@/app/globals.css";
 import Link from "next/link";
 import {useAction} from "convex/react";
 import {Button} from "@/components/ui/button";
-import {Id} from "@/convex/_generated/dataModel";
 import {PersistedGame} from "@/convex/myFunctions";
 
 const PartitePage: React.FC = () => {
     const actionRetrieve = useAction(api.myFunctions.retrieveGames);
-    const [winner, setWinner] = useState<string>('');
-    const [pointsTeam1, setPointsTeam1] = useState<number>(0);
-    const [pointsTeam2, setPointsTeam2] = useState<number>(0);
 
     const [nowPlaying, setNowPlaying] = useState(false);
     const [gamesForToday, setGamesForToday]: [PersistedGame[]|undefined, Dispatch<SetStateAction<PersistedGame[]|undefined>>] = useState();
@@ -46,37 +42,67 @@ const PartitePage: React.FC = () => {
     }, [gamesForToday]);
 
      const updateGame = useAction(api.myFunctions.updateGame);
-     const updateGameOnClick = (a: Id<"games">)=>{
-         updateGame({
-             id: a,
-             winner,
-             pointsTeam1,
-             pointsTeam2
-         })
-             .then((r)=>{
-                 switch (r.tag) {
-                     case "left":
-                         return "KO";
-                     case "right": {
-                         actionRetrieve({date: 124567})
-                             .then((newVar)=>{
-                                 if(newVar) setGamesForToday(newVar)
-                             })
-                             .catch((e)=>{console.log('error', e)})
-                     }
-                 }
+     const updateGameOnClick = (index: number)=>{
+         if(gamesForToday) {
+             const gameToUpdate = gamesForToday[index];
+             updateGame({
+                 id: gameToUpdate._id,
+                 winner: gameToUpdate.winner,
+                 pointsTeam1: gameToUpdate.pointsTeam1,
+                 pointsTeam2: gameToUpdate.pointsTeam2
              })
-             .catch((e)=>{console.log('error', e)})
+                 .then((r) => {
+                     switch (r.tag) {
+                         case "left":
+                             return "KO";
+                         case "right": {
+                             actionRetrieve({date: 124567})
+                                 .then((newVar) => {
+                                     if (newVar) setGamesForToday(newVar)
+                                 })
+                                 .catch((e) => {
+                                     console.log('error', e)
+                                 })
+                         }
+                     }
+                 })
+                 .catch((e) => {
+                     console.log('error', e)
+                 })
+         }
      }
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setWinner(event.target.value);
+    const handleWinnerInputChange = (index: number)=>(event: React.ChangeEvent<HTMLInputElement>) => {
+         if (gamesForToday)
+        setGamesForToday([
+            ...gamesForToday,
+            {
+                ...gamesForToday[index],
+                winner: event.target.value
+            }
+        ])
     };
-    const handleInputChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPointsTeam1(parseInt(event.target.value));
+
+    const handlePt1InputChange = (index: number)=>(event: React.ChangeEvent<HTMLInputElement>) => {
+         if (gamesForToday)
+        setGamesForToday([
+            ...gamesForToday,
+            {
+                ...gamesForToday[index],
+                pointsTeam2: parseInt(event.target.value)
+            }
+        ])
     };
-    const handleInputChange3 = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPointsTeam2(parseInt(event.target.value));
+
+    const handlePt2InputChange = (index: number)=>(event: React.ChangeEvent<HTMLInputElement>) => {
+         if (gamesForToday)
+        setGamesForToday([
+            ...gamesForToday,
+            {
+                ...gamesForToday[index],
+                pointsTeam2: parseInt(event.target.value)
+            }
+        ])
     };
     // const performMyAction = useMutation(api.myFunctions.addGames);
     // const addGame = () => {
@@ -108,15 +134,13 @@ const PartitePage: React.FC = () => {
                             <p className={'partita-details'}>
                                 <input
                                     type="text"
-                                    defaultValue={partita.pointsTeam1}
-                                    value={winner}
-                                    onChange={handleInputChange2}
+                                    value={partita.pointsTeam1}
+                                    onChange={handlePt1InputChange(index)}
                                     className={'search-input'}
                                 /> - <input
                                 type="text"
-                                defaultValue={partita.pointsTeam2}
-                                value={winner}
-                                onChange={handleInputChange3}
+                                value={partita.pointsTeam2}
+                                onChange={handlePt2InputChange(index)}
                                 className={'search-input'}
                             />
                                 {nowPlaying && <span
@@ -124,12 +148,11 @@ const PartitePage: React.FC = () => {
                             </p>
                             <p>Vincitore: <input
                                 type="text"
-                                defaultValue={partita.winner}
-                                value={winner}
-                                onChange={handleInputChange}
+                                value={partita.winner}
+                                onChange={handleWinnerInputChange(index)}
                                 className={'search-input'}
                             /></p>
-                            <Button onClick={() => updateGameOnClick(partita._id)}>Aggiorna</Button>
+                            <Button onClick={() => updateGameOnClick(index)}>Aggiorna</Button>
                         </div>
                     );
                 })}
