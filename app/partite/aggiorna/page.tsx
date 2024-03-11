@@ -5,7 +5,6 @@ import {api} from "@/convex/_generated/api";
 import "@/app/globals.css";
 import Link from "next/link";
 import {useAction} from "convex/react";
-import {Button} from "@/components/ui/button";
 import {PersistedGame} from "@/convex/myFunctions";
 
 const PartitePage: React.FC = () => {
@@ -122,7 +121,9 @@ const PartitePage: React.FC = () => {
 
     return (
         <div className={'partite-container'}>
-            <h1>Partite di oggi</h1>
+            <div className={'padel-intro'}>
+                <h1 className={'padel-title'}>Partite di oggi</h1>
+            </div>
             <div className={'partita-grid'}>
                 {gamesForToday?.map((partita, index) => {
                     const startDate = new Date(partita.startDate);
@@ -150,9 +151,9 @@ const PartitePage: React.FC = () => {
                                 type="text"
                                 value={partita.winner}
                                 onChange={handleWinnerInputChange(index)}
+                                onBlur={() => updateGameOnClick(index)}
                                 className={'search-input'}
                             /></p>
-                            <Button onClick={() => updateGameOnClick(index)}>Aggiorna</Button>
                         </div>
                     );
                 })}

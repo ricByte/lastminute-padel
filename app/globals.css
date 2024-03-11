@@ -88,13 +88,11 @@
 }
 
 .padel-title {
-  color: #333;
   font-size: 2rem;
   margin-bottom: 10px;
 }
 
 .padel-text {
-  color: #555;
   font-size: 1.2rem;
   line-height: 1.5;
 }
@@ -201,7 +199,6 @@
 }
 
 .menuItem a {
-  color: #333;
   text-decoration: none;
   font-weight: bold;
 }

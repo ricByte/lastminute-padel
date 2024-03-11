@@ -77,7 +77,9 @@ const PartitePage: React.FC = () => {
 
     return (
         <div className={'partite-container'}>
-            <h1>Partite di oggi</h1>
+            <div className={'padel-intro'}>
+                <h1 className={'padel-title'}>Partite di oggi</h1>
+            </div>
             <div className={'partita-grid'}>
                 {gamesForToday?.map((partita, index) => {
                     const startDate = new Date(partita.startDate);
