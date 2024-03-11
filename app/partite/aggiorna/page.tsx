@@ -11,6 +11,9 @@ import {PersistedGame} from "@/convex/myFunctions";
 
 const PartitePage: React.FC = () => {
     const actionRetrieve = useAction(api.myFunctions.retrieveGames);
+    const [winner, setWinner] = useState<string>('');
+    const [pointsTeam1, setPointsTeam1] = useState<number>(0);
+    const [pointsTeam2, setPointsTeam2] = useState<number>(0);
 
     const [nowPlaying, setNowPlaying] = useState(false);
     const [gamesForToday, setGamesForToday]: [PersistedGame[]|undefined, Dispatch<SetStateAction<PersistedGame[]|undefined>>] = useState();
@@ -44,7 +47,12 @@ const PartitePage: React.FC = () => {
 
      const updateGame = useAction(api.myFunctions.updateGame);
      const updateGameOnClick = (a: Id<"games">)=>{
-         updateGame({id: a})
+         updateGame({
+             id: a,
+             winner,
+             pointsTeam1,
+             pointsTeam2
+         })
              .then((r)=>{
                  switch (r.tag) {
                      case "left":
@@ -60,6 +68,16 @@ const PartitePage: React.FC = () => {
              })
              .catch((e)=>{console.log('error', e)})
      }
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setWinner(event.target.value);
+    };
+    const handleInputChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPointsTeam1(parseInt(event.target.value));
+    };
+    const handleInputChange3 = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPointsTeam2(parseInt(event.target.value));
+    };
     // const performMyAction = useMutation(api.myFunctions.addGames);
     // const addGame = () => {
     //     performMyAction({
@@ -88,12 +106,33 @@ const PartitePage: React.FC = () => {
                                 {partita.team1} vs {partita.team2} @{startDate.toLocaleString()}
                             </p>
                             <p className={'partita-details'}>
-                                {partita.pointsTeam1} - {partita.pointsTeam2}
+                                <input
+                                    type="text"
+                                    defaultValue={partita.pointsTeam1}
+                                    placeholder="Punti team 1"
+                                    value={winner}
+                                    onChange={handleInputChange2}
+                                    className={'search-input'}
+                                /> - <input
+                                type="text"
+                                defaultValue={partita.pointsTeam2}
+                                placeholder="Punti team 2"
+                                value={winner}
+                                onChange={handleInputChange3}
+                                className={'search-input'}
+                            />
                                 {nowPlaying && <span
                                     className={'now-playing'}>Now Playing</span>} {/* Didascalia "Now Playing" se nell'orario indicato */}
                             </p>
-                            <p>Vincitore: {partita.winner}</p> {/* Mostra il vincitore */}
-                            <Button onClick={() => updateGameOnClick(partita._id)}>Aggiungi winner</Button>
+                            <p>Vincitore: <input
+                                type="text"
+                                placeholder="Winner..."
+                                defaultValue={partita.winner}
+                                value={winner}
+                                onChange={handleInputChange}
+                                className={'search-input'}
+                            /></p>
+                            <Button onClick={() => updateGameOnClick(partita._id)}>Aggiorna</Button>
                         </div>
                     );
                 })}

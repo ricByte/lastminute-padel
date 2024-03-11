@@ -40,10 +40,17 @@ export const getGame = query({
 });
 
 export const addWinner = mutation({
-    args: {id: v.id("games")},
+    args: {
+        id: v.id("games"),
+        winner: v.optional(v.string()),
+        pointsTeam1: v.optional(v.number()),
+        pointsTeam2: v.optional(v.number())
+    },
     handler: async (ctx, args) => {
         await ctx.db.patch(args.id, {
-            winner: "Team 1"
+            winner: args.winner,
+            pointsTeam1: args.pointsTeam1,
+            pointsTeam2: args.pointsTeam2
         });
     },
 });
@@ -52,7 +59,12 @@ type UpdateGameError = {
     reason: string
 }
 export const updateGame = action({
-    args: {id: v.id("games")},
+    args: {
+        id: v.id("games"),
+        winner: v.optional(v.string()),
+        pointsTeam1: v.optional(v.number()),
+        pointsTeam2: v.optional(v.number())
+    },
 
     // Action implementation.
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -65,7 +77,12 @@ export const updateGame = action({
                 id: args.id
             });
             if (data !== null) {
-                await ctx.runMutation(api.myFunctions.addWinner, {id: args.id})
+                await ctx.runMutation(api.myFunctions.addWinner, {
+                    id: args.id,
+                    winner: args.winner,
+                    pointsTeam1: args.pointsTeam1,
+                    pointsTeam2: args.pointsTeam2
+                })
                 const a: PersistedGame | null = await ctx.runQuery(api.myFunctions.getGame, {
                     id: args.id
                 });
