@@ -18,9 +18,13 @@ export const gamesForDay = query({
     handler: async (ctx, args) => {
         //// Read the database as many times as you need here.
         //// See https://docs.convex.dev/database/reading-data.
+        const today = new Date(args.date).toDateString();
+        const todayAtMidnight = new Date(today)//today at 00:00
+        const tomorrow = new Date(today);
+        tomorrow.setDate(todayAtMidnight.getDate() + 1)
         return ctx.db
             .query("games")
-            .filter((q) => q.lte(q.field("startDate"), args.date) && q.gte(q.field("endDate"), args.date))
+            .filter((q) => q.lte(q.field("startDate"), todayAtMidnight.toISOString()) && q.gte(q.field("endDate"), tomorrow.toISOString()))
             // Ordered by _creationTime, return most recent
             .order("desc")
             .collect();
