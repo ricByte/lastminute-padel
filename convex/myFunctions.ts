@@ -19,7 +19,7 @@ export const gamesForDay = query({
     //// See https://docs.convex.dev/database/reading-data.
     return ctx.db
         .query("games")
-        .filter((q) => q.gte(q.field("startDate"), args.date))
+        .filter((q) => q.lte(q.field("startDate"), args.date))
         // Ordered by _creationTime, return most recent
         .order("desc");
   },
