@@ -41,13 +41,14 @@ const PartitePage: React.FC = () => {
     const viewGames = () => {
         console.log(performMyAction2);
     };
-    const addGame = async () => {
-        await performMyAction({
+    const addGame = () => {
+        performMyAction({
             endDate: "2024-03-10T17:30:00.000Z",
             startDate: "2024-03-12T18:00:00.000Z",
             team1: "Team1",
             team2: "Team2"
-        })
+        }).then((r)=>console.log(r))
+            .catch(()=>console.log("KO"))
     };
     return (
         <div className={'partite-container'}>
