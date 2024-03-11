@@ -14,6 +14,7 @@ export const gamesForDay = query({
     handler: async (ctx, args) => {
         console.log(`games for today: ${args.date}`)
         const today = new Date(args.date);
+        console.log(`today is: ${today.toISOString()}`)
         today.setHours(0)
         today.setTime(0)
         const tomorrow = new Date(today.getTime());
