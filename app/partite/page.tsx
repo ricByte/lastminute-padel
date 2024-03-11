@@ -5,7 +5,6 @@ import {api} from "@/convex/_generated/api";
 import "@/app/globals.css";
 import Link from "next/link";
 import {useAction} from "convex/react";
-import {Id} from "@/convex/_generated/dataModel";
 import {PersistedGame} from "@/convex/myFunctions";
 
 const PartitePage: React.FC = () => {
@@ -15,14 +14,11 @@ const PartitePage: React.FC = () => {
     const [gamesForToday, setGamesForToday]: [PersistedGame[]|undefined, Dispatch<SetStateAction<PersistedGame[]|undefined>>] = useState();
 
     useEffect(()=> {
-        const effect = async () => {
+        const interval = setInterval(async () => {
             const newVar = await actionRetrieve({date: 124567});
             if(newVar) setGamesForToday(newVar)
-        };
-        effect()
-            .then(()=>console.log("DONE"))
-            .catch(()=>console.log("ERROR"))
-
+        }, 60*1000); // Controlla ogni minuto
+        return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
     }, []);
 
     useEffect(() => {
@@ -41,24 +37,6 @@ const PartitePage: React.FC = () => {
 
     }, [gamesForToday]);
 
-     const updateGame = useAction(api.myFunctions.updateGame);
-     const updateGameOnClick = (a: Id<"games">)=>{
-         updateGame({id: a})
-             .then((r)=>{
-                 switch (r.tag) {
-                     case "left":
-                         return "KO";
-                     case "right": {
-                         actionRetrieve({date: 124567})
-                             .then((newVar)=>{
-                                 if(newVar) setGamesForToday(newVar)
-                             })
-                             .catch((e)=>{console.log('error', e)})
-                     }
-                 }
-             })
-             .catch((e)=>{console.log('error', e)})
-     }
     // const performMyAction = useMutation(api.myFunctions.addGames);
     // const addGame = () => {
     //     performMyAction({
