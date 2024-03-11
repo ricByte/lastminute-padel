@@ -5,7 +5,7 @@ import {api} from "@/convex/_generated/api";
 import "@/app/globals.css";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
-import {useQuery} from "convex/react";
+import {useMutation, useQuery} from "convex/react";
 
 const PartitePage: React.FC = () => {
     const [nowPlaying, setNowPlaying] = useState(false);
@@ -36,17 +36,31 @@ const PartitePage: React.FC = () => {
     ];
 
     // const performMyAction = useAction(api.myFunctions.doSomething);
-    const performMyAction2 = useQuery(api.myFunctions.listImage);
-    const handleClick = () => {
+    const performMyAction = useMutation(api.myFunctions.addGames);
+    const performMyAction2 = useQuery(api.myFunctions.gamesForDay, {date: new Date().toISOString()});
+    const viewGames = () => {
         console.log(performMyAction2);
+    };
+    const addGame = async () => {
+        await performMyAction({
+            endDate: "2024-03-10T17:30:00.000Z",
+            startDate: "2024-03-12T18:00:00.000Z",
+            team1: "Team1",
+            team2: "Team2"
+        })
     };
     return (
         <div className={'partite-container'}>
             <h1>Partite</h1>
             <Button
-                onClick={handleClick}
+                onClick={addGame}
             >
-                Add a random number
+                Add Game
+            </Button>
+            <Button
+                onClick={viewGames}
+            >
+                View Games
             </Button>
             <div className={'partita-grid'}>
                 {partite.map((partita, index) => (

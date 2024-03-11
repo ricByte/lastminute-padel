@@ -1,33 +1,26 @@
 import {v} from "convex/values";
 import {action, mutation, query} from "./_generated/server";
 import {api} from "./_generated/api";
-import {queryWithAuth} from "@convex-dev/convex-lucia-auth";
 
 // Write your Convex functions in any file inside this directory (`convex`).
 // See https://docs.convex.dev/functions for more.
 
 // You can read data from the database via a query:
-export const listNumbers = queryWithAuth({
+export const gamesForDay = query({
   // Validators for arguments.
   args: {
-    count: v.number(),
+    date: v.string(),
   },
 
   // Query implementation.
   handler: async (ctx, args) => {
     //// Read the database as many times as you need here.
     //// See https://docs.convex.dev/database/reading-data.
-    const numbers = await ctx.db
-      .query("numbers")
-      // Ordered by _creationTime, return most recent
-      .order("desc")
-      .take(args.count);
-    return {
-      viewer: ctx.session?.user.email,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-ignore
-      numbers: numbers.toReversed().map((number) => number.value),
-    };
+    return ctx.db
+        .query("games")
+        .filter((q) => q.gte(q.field("startDate"), args.date))
+        // Ordered by _creationTime, return most recent
+        .order("desc");
   },
 });
 
@@ -64,10 +57,41 @@ export const readFromGoogle=
   },
 });
 
-export const listImage = query({
-  args: {},
-  handler: async (ctx) => {
-    return await ctx.storage.getUrl("kg2ep7bj928hxfa8vny6bwxe7d6mwjsx")
+export const addGames = mutation({
+  // Validators for arguments.
+  args: {
+    endDate: v.string(),
+    startDate: v.string(),
+    team1: v.string(),
+    team2: v.string(),
+    pointsTeam1: v.optional(v.number()),
+    pointsTeam2: v.optional(v.number()),
+    winner: v.optional(v.string())
+  },
+
+  // Action implementation.
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  handler: async (ctx, args) => {
+    //// Use the browser-like `fetch` API to send HTTP requests.
+    //// See https://docs.convex.dev/functions/actions#calling-third-party-apis-and-using-npm-packages.
+    // const response = await ctx.fetch("https://api.thirdpartyservice.com");
+    // const data = await response.json();
+
+    //// Query data by running Convex queries.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    const id = await ctx.db.insert("games", {
+      endDate: args.endDate,
+      startDate: args.startDate,
+      team1: args.team1,
+      team2: args.team2,
+      pointsTeam1: args.pointsTeam1,
+      pointsTeam2: args.pointsTeam2,
+      winner: args.winner
+    });
+    console.log("Added new document with id:", id);
+
   },
 });
 

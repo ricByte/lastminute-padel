@@ -1,6 +1,6 @@
-import { defineSchema, defineTable } from "convex/server";
-import { authTables } from "@convex-dev/convex-lucia-auth";
-import { v } from "convex/values";
+import {defineSchema, defineTable} from "convex/server";
+import {authTables} from "@convex-dev/convex-lucia-auth";
+import {v} from "convex/values";
 
 export default defineSchema(
   {
@@ -14,6 +14,16 @@ export default defineSchema(
     numbers: defineTable({
       value: v.number(),
     }),
+    games: defineTable({
+      endDate: v.string(),
+      startDate: v.string(),
+      team1: v.string(),
+      team2: v.string(),
+      pointsTeam1: v.optional(v.number()),
+      pointsTeam2: v.optional(v.number()),
+      winner: v.optional(v.string())
+    }),
+
   },
   // If you ever get an error about schema mismatch
   // between your data and your schema, and you cannot
