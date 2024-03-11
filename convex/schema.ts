@@ -23,7 +23,14 @@ export default defineSchema(
       pointsTeam2: v.optional(v.number()),
       winner: v.optional(v.string())
     }),
-
+    groups: defineTable({
+        teams: v.array(
+            v.object({
+                name:v.string(),
+                members: v.array(v.string())
+            })
+        )
+    })
   },
   // If you ever get an error about schema mismatch
   // between your data and your schema, and you cannot
