@@ -6,9 +6,9 @@ import {Id} from "./_generated/dataModel";
 
 // Write your Convex functions in any file inside this directory (`convex`).
 // See https://docs.convex.dev/functions for more.
-type Left<T> = { tag: "left", value: T };
-type Right<T> = { tag: "right", value: T };
-type Either<L, R> = Left<L> | Right<R>;
+export type Left<T> = { tag: "left", value: T };
+export type Right<T> = { tag: "right", value: T };
+export type Either<L, R> = Left<L> | Right<R>;
 
 
 export type PersistedGroup = {
@@ -16,6 +16,22 @@ export type PersistedGroup = {
     _creationTime: number;
     name: string
     teams: { name: string; members: string[]; }[];
+}
+
+export type PersistedGame = {
+    _id: Id<"games">;
+    _creationTime: number;
+    pointsTeam1?: number | undefined;
+    pointsTeam2?: number | undefined;
+    winner?: string | undefined;
+    endDate: string;
+    startDate: string;
+    team1: string;
+    team2: string;
+}
+
+export type UpdateGameError = {
+    reason: string
 }
 export const gamesForDay = query({
     args: {
@@ -73,9 +89,6 @@ export const addWinner = mutation({
     },
 });
 
-type UpdateGameError = {
-    reason: string
-}
 export const updateGame = action({
     args: {
         id: v.id("games"),
@@ -115,18 +128,6 @@ export const updateGame = action({
 
     },
 });
-
-export type PersistedGame = {
-    _id: Id<"games">;
-    _creationTime: number;
-    pointsTeam1?: number | undefined;
-    pointsTeam2?: number | undefined;
-    winner?: string | undefined;
-    endDate: string;
-    startDate: string;
-    team1: string;
-    team2: string;
-}
 export const retrieveGames = action({
     // Validators for arguments.
     args: {
