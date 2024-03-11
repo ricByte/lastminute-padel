@@ -1,6 +1,7 @@
 import {v} from "convex/values";
 import {action, mutation, query} from "./_generated/server";
 import {api} from "./_generated/api";
+import {queryWithAuth} from "@convex-dev/convex-lucia-auth";
 
 // Write your Convex functions in any file inside this directory (`convex`).
 // See https://docs.convex.dev/functions for more.
@@ -47,13 +48,27 @@ export const addNumber = mutation({
   },
 });
 
-export const readFromGoogle=
-    action({
-  handler: () => {
-    // implementation goes here
+export const listNumbers = queryWithAuth({
+  // Validators for arguments.
+  args: {
+    count: v.number(),
+  },
 
-    // optionally return a value
-    return "success";
+  // Query implementation.
+  handler: async (ctx, args) => {
+    //// Read the database as many times as you need here.
+    //// See https://docs.convex.dev/database/reading-data.
+    const numbers = await ctx.db
+        .query("numbers")
+        // Ordered by _creationTime, return most recent
+        .order("desc")
+        .take(args.count);
+    return {
+      viewer: ctx.session?.user.email,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      numbers: numbers.toReversed().map((number) => number.value),
+    };
   },
 });
 
