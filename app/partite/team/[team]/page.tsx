@@ -6,11 +6,9 @@ import "@/app/globals.css";
 import Link from "next/link";
 import {useAction} from "convex/react";
 import {PersistedGame} from "@/convex/myFunctions";
-import {NextRouter, useRouter} from 'next/router';
 
-const PartitePage: React.FC = () => {
+export default function Page({ params }: { params: { slug: string } }) {
     const actionRetrieve = useAction(api.myFunctions.retrieveGames);
-    const router: NextRouter = useRouter()
 
     const [nowPlaying, setNowPlaying] = useState(false);
     const [gamesForToday, setGamesForToday]: [PersistedGame[]|undefined, Dispatch<SetStateAction<PersistedGame[]|undefined>>] = useState();
@@ -64,8 +62,8 @@ const PartitePage: React.FC = () => {
         <div className={'partite-container'}>
             <div className={'padel-intro'}>
                 <h1 className={'padel-title'}>Partite di oggi</h1>
-                <p>team: {router.query.team}</p>
-                <p>query: {JSON.stringify(router.query)}</p>
+                {/*<p>team: {router}</p>*/}
+                <p>query: {JSON.stringify(params)}</p>
             </div>
             <div className={'partita-grid'}>
                 {gamesForToday?.map((partita, index) => {
@@ -88,6 +86,5 @@ const PartitePage: React.FC = () => {
             <Link href="/">Torna alla home</Link>
         </div>
     );
-};
+}
 
-export default PartitePage;

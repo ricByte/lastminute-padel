@@ -28,7 +28,8 @@ export default defineSchema(
         teams: v.array(
             v.object({
                 name:v.string(),
-                members: v.array(v.string())
+                members: v.array(v.string()),
+                id: v.string()
             })
         )
     })
