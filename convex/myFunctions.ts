@@ -13,13 +13,14 @@ export const gamesForDay = query({
     },
     handler: async (ctx, args) => {
         console.log(`games for today: ${args.date}`)
-        const today = new Date(args.date).toDateString();
-        const todayAtMidnight = new Date(today)//today at 00:00
-        const tomorrow = new Date(today);
-        tomorrow.setDate(todayAtMidnight.getDate() + 1)
+        const today = new Date(args.date);
+        today.setHours(0)
+        today.setTime(0)
+        const tomorrow = new Date(today.getTime());
+        tomorrow.setDate(today.getDate() + 1)
         return ctx.db
             .query("games")
-            .filter((q) => q.lte(q.field("startDate"), todayAtMidnight.toISOString()) && q.gte(q.field("endDate"), tomorrow.toISOString()))
+            .filter((q) => q.lte(q.field("startDate"), today.toISOString()) && q.gte(q.field("endDate"), tomorrow.toISOString()))
             .order("desc")
             .collect();
     },
