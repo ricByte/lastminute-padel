@@ -14,12 +14,15 @@ const PartitePage: React.FC = () => {
     const [gamesForToday, setGamesForToday]: [PersistedGame[]|undefined, Dispatch<SetStateAction<PersistedGame[]|undefined>>] = useState();
 
     useEffect(()=> {
-        const interval = setInterval( () => {
-            actionRetrieve({date: 124567}).then(newVar => {
-                if(newVar) setGamesForToday(newVar)
-            }).catch(reason => console.log(reason))
-
-        }, 60*1000); // Controlla ogni minuto
+        const callback = () => {
+            actionRetrieve({date: 124567})
+                .then(newVar => {
+                    if(newVar) setGamesForToday(newVar)
+                })
+                .catch(reason => console.log(reason))
+        };
+        const interval = setInterval( callback, 60*1000); // Controlla ogni minuto
+        callback();
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
     }, []);
 
