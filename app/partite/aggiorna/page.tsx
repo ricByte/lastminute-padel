@@ -137,12 +137,12 @@ const PartitePage: React.FC = () => {
                                 <input
                                     type="text"
                                     value={partita.pointsTeam1}
-                                    onChange={handlePt1InputChange(index)}
+                                    onBlur={() => updateGameOnClick(index)}
                                     className={'search-input'}
                                 /> - <input
                                 type="text"
                                 value={partita.pointsTeam2}
-                                onChange={handlePt2InputChange(index)}
+                                onBlur={() => updateGameOnClick(index)}
                                 className={'search-input'}
                             />
                                 {nowPlaying && <span
