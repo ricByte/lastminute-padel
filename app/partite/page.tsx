@@ -45,7 +45,7 @@ const PartitePage: React.FC = () => {
     //         .catch(()=>console.log("KO"))
     // };
 
-    const gamesForToday = useQuery(api.myFunctions.gamesForDay, {date:new Date().toISOString()})
+    const gamesForToday = useQuery(api.myFunctions.gamesForDay, {date:new Date().getTime()})
 
     return (
         <div className={'partite-container'}>
