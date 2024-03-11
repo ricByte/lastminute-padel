@@ -12,6 +12,7 @@ export const gamesForDay = query({
         date: v.string(),
     },
     handler: async (ctx, args) => {
+        console.log(`games for today: ${args.date}`)
         const today = new Date(args.date).toDateString();
         const todayAtMidnight = new Date(today)//today at 00:00
         const tomorrow = new Date(today);
