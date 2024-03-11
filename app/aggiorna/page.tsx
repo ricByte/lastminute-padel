@@ -1,9 +1,9 @@
 "use client";
 
-import './globals.css';
 import React from 'react';
 import Group from "@/components/Group";
 import Menu from "@/components/Menu";
+import '../globals.css';
 
 
 const PadelPage: React.FC = () => {
