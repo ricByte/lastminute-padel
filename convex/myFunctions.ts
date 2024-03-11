@@ -66,6 +66,55 @@ export const getGroups = query({
         return promise;
     },
 });
+export const getGameFor = query({
+    args: {
+        team: v.string()
+    },
+    handler: async (ctx, args) => {
+        const promise = await ctx.db
+            .query("games")
+            .order("asc")
+            .filter((q) => q.or(
+                q.eq(q.field("team1"), args.team),
+                q.eq(q.field("team2"), args.team)
+            ))
+            .collect();
+        console.log(promise)
+        return promise;
+    },
+});
+
+export const getGameForTeam = action({
+    // Validators for arguments.
+    args: {
+        team: v.string()
+    },
+
+    // Action implementation.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    handler: async (ctx, args) => {
+        //// Use the browser-like `fetch` API to send HTTP requests.
+        //// See https://docs.convex.dev/functions/actions#calling-third-party-apis-and-using-npm-packages.
+        // const response = await ctx.fetch("https://api.thirdpartyservice.com");
+        // const data = await response.json();
+
+        //// Query data by running Convex queries.
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+
+
+        try {
+            console.log(`Retrieving groups`);
+            const data: PersistedGame[] = await ctx.runQuery(api.myFunctions.getGameFor, args);
+            console.log(data);
+            return data
+        } catch (e) {
+            console.log(e)
+        }
+
+    },
+});
 export const getGame = query({
     args: {id: v.id("games")},
     handler: async (ctx, args) => {
