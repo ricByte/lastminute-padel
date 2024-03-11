@@ -10,9 +10,10 @@ import {Id} from "@/convex/_generated/dataModel";
 import {PersistedGame} from "@/convex/myFunctions";
 
 const PartitePage: React.FC = () => {
+    const actionRetrieve = useAction(api.myFunctions.retrieveGames);
+
     const [nowPlaying, setNowPlaying] = useState(false);
     const [gamesForToday, setGamesForToday]: [PersistedGame[]|undefined, Dispatch<SetStateAction<PersistedGame[]|undefined>>] = useState();
-    const actionRetrieve = useAction(api.myFunctions.retrieveGames);
 
     useEffect(()=> {
         const effect = async () => {
@@ -44,8 +45,20 @@ const PartitePage: React.FC = () => {
      const updateGame = useAction(api.myFunctions.updateGame);
      const updateGameOnClick = (a: Id<"games">)=>{
          updateGame({id: a})
-             .then(()=>{console.log('updates')})
-             .catch(()=>{console.log('error')})
+             .then((r)=>{
+                 switch (r.tag) {
+                     case "left":
+                         return "KO";
+                     case "right": {
+                         actionRetrieve({date: 124567})
+                             .then((newVar)=>{
+                                 if(newVar) setGamesForToday(newVar)
+                             })
+                             .catch((e)=>{console.log('error', e)})
+                     }
+                 }
+             })
+             .catch((e)=>{console.log('error', e)})
      }
     // const performMyAction = useMutation(api.myFunctions.addGames);
     // const addGame = () => {

@@ -6,6 +6,9 @@ import {Id} from "./_generated/dataModel";
 
 // Write your Convex functions in any file inside this directory (`convex`).
 // See https://docs.convex.dev/functions for more.
+type Left<T> = { tag: "left", value: T };
+type Right<T> = { tag: "right", value: T };
+type Either<L, R> = Left<L> | Right<R>;
 
 export const gamesForDay = query({
     args: {
@@ -44,13 +47,17 @@ export const addWinner = mutation({
         });
     },
 });
+
+type UpdateGameError = {
+    reason: string
+}
 export const updateGame = action({
     args: {id: v.id("games")},
 
     // Action implementation.
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
-    handler: async (ctx, args) => {
+    handler: async (ctx, args): Promise<Either<UpdateGameError, PersistedGame>> => {
 
         try {
             console.log(`Retrieving for id: ${args.id}`);
@@ -59,11 +66,16 @@ export const updateGame = action({
             });
             if (data !== null) {
                 await ctx.runMutation(api.myFunctions.addWinner, {id: args.id})
-                return {result: 'OK'}
+                const a: PersistedGame | null = await ctx.runQuery(api.myFunctions.getGame, {
+                    id: args.id
+                });
+                if (a!=null) return {tag: "right", value: a};
+                return {tag:"left", value: {reason: 'Error after updating'}}
             }
-            return {result: 'Not found'}
+            return {tag:"left",value:{reason: 'Not found'}}
         } catch (e) {
             console.log(e)
+            return {tag:"left",value:{reason: "Unexpected error during update game"}}
         }
 
     },
