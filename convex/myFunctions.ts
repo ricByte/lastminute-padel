@@ -10,6 +10,13 @@ type Left<T> = { tag: "left", value: T };
 type Right<T> = { tag: "right", value: T };
 type Either<L, R> = Left<L> | Right<R>;
 
+
+export type PersistedGroup = {
+    _id: Id<"groups">;
+    _creationTime: number;
+    name: string
+    teams: { name: string; members: string[]; }[];
+}
 export const gamesForDay = query({
     args: {
         date: v.any(),
@@ -32,6 +39,17 @@ export const gamesForDay = query({
     },
 });
 
+export const getGroups = query({
+    args: {},
+    handler: async (ctx) => {
+        const promise = await ctx.db
+            .query("groups")
+            .order("desc")
+            .collect();
+        console.log(promise)
+        return promise;
+    },
+});
 export const getGame = query({
     args: {id: v.id("games")},
     handler: async (ctx, args) => {
@@ -86,13 +104,13 @@ export const updateGame = action({
                 const a: PersistedGame | null = await ctx.runQuery(api.myFunctions.getGame, {
                     id: args.id
                 });
-                if (a!=null) return {tag: "right", value: a};
-                return {tag:"left", value: {reason: 'Error after updating'}}
+                if (a != null) return {tag: "right", value: a};
+                return {tag: "left", value: {reason: 'Error after updating'}}
             }
-            return {tag:"left",value:{reason: 'Not found'}}
+            return {tag: "left", value: {reason: 'Not found'}}
         } catch (e) {
             console.log(e)
-            return {tag:"left",value:{reason: "Unexpected error during update game"}}
+            return {tag: "left", value: {reason: "Unexpected error during update game"}}
         }
 
     },
@@ -129,7 +147,6 @@ export const retrieveGames = action({
         //@ts-ignore
 
 
-
         try {
             console.log(`Retrieving for date: ${args.date}`);
             const data: PersistedGame[] = await ctx.runQuery(api.myFunctions.gamesForDay, {
@@ -143,6 +160,37 @@ export const retrieveGames = action({
 
     },
 });
+
+export const retrieveGroups = action({
+    // Validators for arguments.
+    args: {},
+
+    // Action implementation.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    handler: async (ctx, args) => {
+        //// Use the browser-like `fetch` API to send HTTP requests.
+        //// See https://docs.convex.dev/functions/actions#calling-third-party-apis-and-using-npm-packages.
+        // const response = await ctx.fetch("https://api.thirdpartyservice.com");
+        // const data = await response.json();
+
+        //// Query data by running Convex queries.
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+
+
+        try {
+            console.log(`Retrieving groups`);
+            const data: PersistedGroup[] = await ctx.runQuery(api.myFunctions.getGroups);
+            console.log(data);
+            return data
+        } catch (e) {
+            console.log(e)
+        }
+
+    },
+});
+
 // You can write data to the database via a mutation:
 export const addNumber = mutation({
     // Validators for arguments.

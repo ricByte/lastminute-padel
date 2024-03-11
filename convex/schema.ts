@@ -24,6 +24,7 @@ export default defineSchema(
       winner: v.optional(v.string())
     }),
     groups: defineTable({
+        name: v.string(),
         teams: v.array(
             v.object({
                 name:v.string(),
