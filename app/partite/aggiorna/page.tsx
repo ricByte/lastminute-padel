@@ -109,14 +109,12 @@ const PartitePage: React.FC = () => {
                                 <input
                                     type="text"
                                     defaultValue={partita.pointsTeam1}
-                                    placeholder="Punti team 1"
                                     value={winner}
                                     onChange={handleInputChange2}
                                     className={'search-input'}
                                 /> - <input
                                 type="text"
                                 defaultValue={partita.pointsTeam2}
-                                placeholder="Punti team 2"
                                 value={winner}
                                 onChange={handleInputChange3}
                                 className={'search-input'}
@@ -126,7 +124,6 @@ const PartitePage: React.FC = () => {
                             </p>
                             <p>Vincitore: <input
                                 type="text"
-                                placeholder="Winner..."
                                 defaultValue={partita.winner}
                                 value={winner}
                                 onChange={handleInputChange}
