@@ -7,15 +7,15 @@ import Link from "next/link";
 import {useAction} from "convex/react";
 import {PersistedGame} from "@/convex/myFunctions";
 
-export default function Page({ params }: { params: { slug: string } }) {
-    const actionRetrieve = useAction(api.myFunctions.retrieveGames);
+export default function Page({ params }: { params: { team: string } }) {
+    const actionRetrieve = useAction(api.myFunctions.getGameForTeam);
 
     const [nowPlaying, setNowPlaying] = useState(false);
     const [gamesForToday, setGamesForToday]: [PersistedGame[]|undefined, Dispatch<SetStateAction<PersistedGame[]|undefined>>] = useState();
 
     useEffect(()=> {
         const callback = () => {
-            actionRetrieve({date: 124567})
+            actionRetrieve({team: params.team.substring(4)})
                 .then(newVar => {
                     if(newVar) setGamesForToday(newVar)
                 })
@@ -62,8 +62,6 @@ export default function Page({ params }: { params: { slug: string } }) {
         <div className={'partite-container'}>
             <div className={'padel-intro'}>
                 <h1 className={'padel-title'}>Partite di oggi</h1>
-                {/*<p>team: {router}</p>*/}
-                <p>query: {JSON.stringify(params)}</p>
             </div>
             <div className={'partita-grid'}>
                 {gamesForToday?.map((partita, index) => {
