@@ -52,22 +52,9 @@ export const updateGame = action({
     //@ts-ignore
     handler: async (ctx, args) => {
 
-        type PersistedGame =
-            {
-                _id: Id<"games">;
-                _creationTime: number;
-                pointsTeam1?: number | undefined;
-                pointsTeam2?: number | undefined;
-                winner?: string | undefined;
-                endDate: string;
-                startDate: string;
-                team1: string;
-                team2: string;
-            } | null
-
         try {
             console.log(`Retrieving for id: ${args.id}`);
-            const data: PersistedGame = await ctx.runQuery(api.myFunctions.getGame, {
+            const data: PersistedGame | null = await ctx.runQuery(api.myFunctions.getGame, {
                 id: args.id
             });
             if (data !== null) {
@@ -81,10 +68,22 @@ export const updateGame = action({
 
     },
 });
+
+export type PersistedGame = {
+    _id: Id<"games">;
+    _creationTime: number;
+    pointsTeam1?: number | undefined;
+    pointsTeam2?: number | undefined;
+    winner?: string | undefined;
+    endDate: string;
+    startDate: string;
+    team1: string;
+    team2: string;
+}
 export const retrieveGames = action({
     // Validators for arguments.
     args: {
-        date: v.string()
+        date: v.number()
     },
 
     // Action implementation.
@@ -100,21 +99,11 @@ export const retrieveGames = action({
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
 
-        type PersistedGames = Array<{
-            _id: Id<"games">;
-            _creationTime: number;
-            pointsTeam1?: number | undefined;
-            pointsTeam2?: number | undefined;
-            winner?: string | undefined;
-            endDate: string;
-            startDate: string;
-            team1: string;
-            team2: string;
-        }>
+
 
         try {
             console.log(`Retrieving for date: ${args.date}`);
-            const data: PersistedGames = await ctx.runQuery(api.myFunctions.gamesForDay, {
+            const data: PersistedGame[] = await ctx.runQuery(api.myFunctions.gamesForDay, {
                 date: args.date
             });
             console.log(data);

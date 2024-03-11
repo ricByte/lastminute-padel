@@ -1,15 +1,29 @@
 "use client";
 
-import React, {useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {api} from "@/convex/_generated/api";
 import "@/app/globals.css";
 import Link from "next/link";
-import {useAction, useQuery} from "convex/react";
+import {useAction} from "convex/react";
 import {Button} from "@/components/ui/button";
 import {Id} from "@/convex/_generated/dataModel";
+import {PersistedGame} from "@/convex/myFunctions";
 
 const PartitePage: React.FC = () => {
     const [nowPlaying, setNowPlaying] = useState(false);
+    const [gamesForToday, setGamesForToday]: [PersistedGame[]|undefined, Dispatch<SetStateAction<PersistedGame[]|undefined>>] = useState();
+    const actionRetrieve = useAction(api.myFunctions.retrieveGames);
+
+    useEffect(()=> {
+        const effect = async () => {
+            const newVar = await actionRetrieve({date: 124567});
+            if(newVar) setGamesForToday(newVar)
+        };
+        effect()
+            .then(()=>console.log("DONE"))
+            .catch(()=>console.log("ERROR"))
+
+    }, []);
 
     useEffect(() => {
         // Controlla l'orario corrente e imposta lo stato di nowPlaying
@@ -22,6 +36,10 @@ const PartitePage: React.FC = () => {
 
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
     }, []);
+
+    useEffect(() => {
+
+    }, [gamesForToday]);
 
      const updateGame = useAction(api.myFunctions.updateGame);
      const updateGameOnClick = (a: Id<"games">)=>{
@@ -45,13 +63,11 @@ const PartitePage: React.FC = () => {
     //         .catch(()=>console.log("KO"))
     // };
 
-    const gamesForToday = useQuery(api.myFunctions.gamesForDay, {date:new Date().getTime()})
-
     return (
         <div className={'partite-container'}>
             <h1>Partite di oggi</h1>
             <div className={'partita-grid'}>
-                {gamesForToday && gamesForToday.map((partita, index) => (
+                {gamesForToday?.map((partita, index) => (
                     <div key={index} className={'partita-item'}>
                         <p className={'partita-details'}>
                             {partita.team1} vs {partita.team2} @{partita.startDate.toLocaleString()}
