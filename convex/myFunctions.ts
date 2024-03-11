@@ -32,7 +32,7 @@ export const gamesForDay = query({
         const promise = await ctx.db
             .query("games")
             // .filter((q) => q.lte(q.field("startDate"), today.toISOString()) && q.gte(q.field("endDate"), tomorrow.toISOString()))
-            .order("desc")
+            .order("asc")
             .collect();
         console.log(promise)
         return promise;
@@ -44,7 +44,7 @@ export const getGroups = query({
     handler: async (ctx) => {
         const promise = await ctx.db
             .query("groups")
-            .order("desc")
+            .order("asc")
             .collect();
         console.log(promise)
         return promise;
@@ -227,7 +227,7 @@ export const listNumbers = queryWithAuth({
         const numbers = await ctx.db
             .query("numbers")
             // Ordered by _creationTime, return most recent
-            .order("desc")
+            .order("asc")
             .take(args.count);
         return {
             viewer: ctx.session?.user.email,
