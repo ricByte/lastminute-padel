@@ -21,7 +21,7 @@ export const gamesForDay = query({
         tomorrow.setDate(today.getDate() + 1)
         return ctx.db
             .query("games")
-            .filter((q) => q.lte(q.field("startDate"), today.toISOString()) && q.gte(q.field("endDate"), tomorrow.toISOString()))
+            // .filter((q) => q.lte(q.field("startDate"), today.toISOString()) && q.gte(q.field("endDate"), tomorrow.toISOString()))
             .order("desc")
             .collect();
     },
