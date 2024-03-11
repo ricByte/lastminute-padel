@@ -7,17 +7,11 @@ import {Id} from "./_generated/dataModel";
 // Write your Convex functions in any file inside this directory (`convex`).
 // See https://docs.convex.dev/functions for more.
 
-// You can read data from the database via a query:
 export const gamesForDay = query({
-    // Validators for arguments.
     args: {
         date: v.string(),
     },
-
-    // Query implementation.
     handler: async (ctx, args) => {
-        //// Read the database as many times as you need here.
-        //// See https://docs.convex.dev/database/reading-data.
         const today = new Date(args.date).toDateString();
         const todayAtMidnight = new Date(today)//today at 00:00
         const tomorrow = new Date(today);
@@ -25,9 +19,61 @@ export const gamesForDay = query({
         return ctx.db
             .query("games")
             .filter((q) => q.lte(q.field("startDate"), todayAtMidnight.toISOString()) && q.gte(q.field("endDate"), tomorrow.toISOString()))
-            // Ordered by _creationTime, return most recent
             .order("desc")
             .collect();
+    },
+});
+
+export const getGame = query({
+    args: {id: v.id("games")},
+    handler: async (ctx, args) => {
+        return await ctx.db.get(args.id);
+    },
+});
+
+export const addWinner = mutation({
+    args: {id: v.id("games")},
+    handler: async (ctx, args) => {
+        await ctx.db.patch(args.id, {
+            winner: "Team 1"
+        });
+    },
+});
+export const updateGame = action({
+    args: {id: v.id("games")},
+
+    // Action implementation.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    handler: async (ctx, args) => {
+
+        type PersistedGame =
+            {
+                _id: Id<"games">;
+                _creationTime: number;
+                pointsTeam1?: number | undefined;
+                pointsTeam2?: number | undefined;
+                winner?: string | undefined;
+                endDate: string;
+                startDate: string;
+                team1: string;
+                team2: string;
+            } | null
+
+        try {
+            console.log(`Retrieving for id: ${args.id}`);
+            const data: PersistedGame = await ctx.runQuery(api.myFunctions.getGame, {
+                id: args.id
+            });
+            if (data !== null) {
+                await ctx.runMutation(api.myFunctions.addWinner, {id: args.id})
+                return {result: 'OK'}
+            }
+            return {result: 'Not found'}
+        } catch (e) {
+            console.log(e)
+        }
+
     },
 });
 export const retrieveGames = action({

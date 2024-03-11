@@ -4,7 +4,9 @@ import React, {useEffect, useState} from 'react';
 import {api} from "@/convex/_generated/api";
 import "@/app/globals.css";
 import Link from "next/link";
-import {useQuery} from "convex/react";
+import {useAction, useQuery} from "convex/react";
+import {Button} from "@/components/ui/button";
+import {Id} from "@/convex/_generated/dataModel";
 
 const PartitePage: React.FC = () => {
     const [nowPlaying, setNowPlaying] = useState(false);
@@ -21,6 +23,12 @@ const PartitePage: React.FC = () => {
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
     }, []);
 
+     const updateGame = useAction(api.myFunctions.updateGame);
+     const updateGameOnClick = (a: Id<"games">)=>{
+         updateGame({id: a})
+             .then(()=>{console.log('updates')})
+             .catch(()=>{console.log('error')})
+     }
     // const performMyAction = useMutation(api.myFunctions.addGames);
     // const addGame = () => {
     //     performMyAction({
@@ -54,6 +62,7 @@ const PartitePage: React.FC = () => {
                                 className={'now-playing'}>Now Playing</span>} {/* Didascalia "Now Playing" se nell'orario indicato */}
                         </p>
                         <p>Vincitore: {partita.winner}</p> {/* Mostra il vincitore */}
+                        <Button onClick={()=>updateGameOnClick(partita._id)}>Aggiungi winner</Button>
                     </div>
                 ))}
             </div>
