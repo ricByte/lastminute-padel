@@ -10,7 +10,7 @@ interface GroupProps {
 const Group: React.FC<GroupProps> = ({ teams, name }) => {
     return (
         <div className={'group-container'}>
-            <h2>{name}</h2>
+            <h2 className={'group-name'}>{name}</h2>
             <div className={'teams-list'}>
                 {teams.map((team, index) => (
                     <Team key={index} {...team} />
