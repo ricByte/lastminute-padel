@@ -19,11 +19,13 @@ export const gamesForDay = query({
         today.setTime(0)
         const tomorrow = new Date(today.getTime());
         tomorrow.setDate(today.getDate() + 1)
-        return ctx.db
+        const promise = await ctx.db
             .query("games")
             // .filter((q) => q.lte(q.field("startDate"), today.toISOString()) && q.gte(q.field("endDate"), tomorrow.toISOString()))
             .order("desc")
             .collect();
+        console.log(promise)
+        return promise;
     },
 });
 
