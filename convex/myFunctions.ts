@@ -9,7 +9,7 @@ import {Id} from "./_generated/dataModel";
 
 export const gamesForDay = query({
     args: {
-        date: v.string(),
+        date: v.any(),
     },
     handler: async (ctx, args) => {
         console.log(`games for today: ${args.date}`)
