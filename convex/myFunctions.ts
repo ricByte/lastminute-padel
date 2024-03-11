@@ -21,7 +21,8 @@ export const gamesForDay = query({
         .query("games")
         .filter((q) => q.lte(q.field("startDate"), args.date))
         // Ordered by _creationTime, return most recent
-        .order("desc");
+        .order("desc")
+        .collect();
   },
 });
 export const retrieveGames = action({
@@ -33,7 +34,7 @@ export const retrieveGames = action({
   // Action implementation.
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  handler: async (ctx, args) => {
+  handler: (ctx, args) => {
     //// Use the browser-like `fetch` API to send HTTP requests.
     //// See https://docs.convex.dev/functions/actions#calling-third-party-apis-and-using-npm-packages.
     // const response = await ctx.fetch("https://api.thirdpartyservice.com");
@@ -43,10 +44,10 @@ export const retrieveGames = action({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     console.log(`Retrieving for date: ${args.date}`);
-    const data = await ctx.runQuery(api.myFunctions.gamesForDay, {
+    ctx.runQuery(api.myFunctions.gamesForDay, {
       date: args.date
-    });
-    console.log(data);
+    }).then(r => console.log(r))
+        .catch(e=> console.log(e));
 
     //// Write data by running Convex mutations.
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
