@@ -24,7 +24,36 @@ export const gamesForDay = query({
         .order("desc");
   },
 });
+export const retrieveGames = action({
+  // Validators for arguments.
+  args: {
+    date: v.string()
+  },
 
+  // Action implementation.
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  handler: async (ctx, args) => {
+    //// Use the browser-like `fetch` API to send HTTP requests.
+    //// See https://docs.convex.dev/functions/actions#calling-third-party-apis-and-using-npm-packages.
+    // const response = await ctx.fetch("https://api.thirdpartyservice.com");
+    // const data = await response.json();
+
+    //// Query data by running Convex queries.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    console.log(`Retrieving for date: ${args.date}`);
+    const data = await ctx.runQuery(api.myFunctions.gamesForDay, {
+      date: args.date
+    });
+    console.log(data);
+
+    //// Write data by running Convex mutations.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+
+  },
+});
 // You can write data to the database via a mutation:
 export const addNumber = mutation({
   // Validators for arguments.
