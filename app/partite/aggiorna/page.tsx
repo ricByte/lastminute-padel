@@ -42,6 +42,7 @@ const PartitePage: React.FC = () => {
 
      const updateGame = useAction(api.myFunctions.updateGame);
      const updateGameOnClick = (index: number)=>{
+         console.log("onBlur", index);
          if(gamesForToday) {
              const gameToUpdate = gamesForToday[index];
              updateGame({
