@@ -35,25 +35,35 @@ export type UpdateGameError = {
 }
 export const gamesForDay = query({
     args: {
-        date: v.any(),
+        date: v.optional(v.any()),
     },
     handler: async (ctx, args) => {
-        console.log(`games for today: ${args.date}`)
-        const today = new Date(args.date);
-        console.log(`today is: ${today.toISOString()}`)
-        today.setHours(0)
-        today.setTime(0)
-        console.log(`today at night: ${today.toISOString()}`)
-        const tomorrow = new Date(today.getTime());
-        tomorrow.setDate(today.getDate() + 1)
-        console.log(`tomorrow at night: ${tomorrow.toISOString()}`)
-        const promise = await ctx.db
-            .query("games")
-            .filter((q) => q.lte(q.field("startDate"), today.toISOString()) && q.gte(q.field("endDate"), tomorrow.toISOString()))
-            .order("asc")
-            .collect();
-        console.log(promise)
-        return promise;
+        if(args.date) {
+            console.log(`games for today: ${args.date}`)
+            const today = new Date(args.date);
+            console.log(`today is: ${today.toISOString()}`)
+            today.setHours(0)
+            today.setTime(0)
+            console.log(`today at night: ${today.toISOString()}`)
+            const tomorrow = new Date(today.getTime());
+            tomorrow.setDate(today.getDate() + 1)
+            console.log(`tomorrow at night: ${tomorrow.toISOString()}`)
+            const promise = await ctx.db
+                .query("games")
+                .filter((q) => q.lte(q.field("startDate"), today.toISOString()) && q.gte(q.field("endDate"), tomorrow.toISOString()))
+                .order("asc")
+                .collect();
+            console.log(promise)
+            return promise;
+        } else {
+            console.log(`date for today is empty`)
+            const promise = await ctx.db
+                .query("games")
+                .order("asc")
+                .collect();
+            console.log(promise)
+            return promise;
+        }
     },
 });
 
