@@ -42,8 +42,7 @@ export const gamesForDay = query({
             console.log(`games for today: ${args.date}`)
             const today = new Date(args.date);
             console.log(`today is: ${today.toISOString()}`)
-            today.setHours(0)
-            today.setTime(0)
+            today.setHours(0, 0, 0, 0)
             console.log(`today at night: ${today.toISOString()}`)
             const tomorrow = new Date(today.getTime());
             tomorrow.setDate(today.getDate() + 1)
