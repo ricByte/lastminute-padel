@@ -60,7 +60,7 @@ const PartitePage: React.FC = () => {
 
     return (
         <div className={'partite-container'}>
-            <div className={'padel-intro'}>
+            <div>
                 <h1 className={'padel-title'}>Partite di oggi</h1>
             </div>
             <div className={'partita-grid'}>
