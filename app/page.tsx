@@ -38,6 +38,9 @@ const PadelPage: React.FC = () => {
                     <Group key={index} {...group} />
                 ))}
             </div>
+            <div style={{paddingLeft: '20px'}}>
+                Powered by <img style={{display:'inline'}} width="100" height="30" loading="eager" role="presentation" src="https://miro.medium.com/v2/resize:fit:1400/0*QMVr-flazwH3vviX.png" />
+            </div>
         </div>
     );
 };
