@@ -7,17 +7,28 @@ import Link from "next/link";
 import {useAction} from "convex/react";
 import {PersistedGame} from "@/convex/myFunctions";
 
+type Game = PersistedGame & { nowPlaying: boolean }
 const PartitePage: React.FC = () => {
     const actionRetrieve = useAction(api.myFunctions.retrieveGames);
 
-    const [nowPlaying, setNowPlaying] = useState(false);
-    const [gamesForToday, setGamesForToday]: [PersistedGame[]|undefined, Dispatch<SetStateAction<PersistedGame[]|undefined>>] = useState();
+    const [gamesForToday, setGamesForToday]: [Game[]|undefined, Dispatch<SetStateAction<Game[]|undefined>>] = useState();
+
+    function addNowPlaying(persistedGames: PersistedGame[]|undefined|Game[]): Game[]|undefined {
+        const now = new Date().toISOString();
+        return persistedGames?.map(game => {
+            const isBetween = now >= game.startDate && now <= game.endDate;
+            return {
+                ...game,
+                nowPlaying: isBetween
+            }
+        });
+    }
 
     useEffect(()=> {
         const callback = () => {
             actionRetrieve({date: new Date().getTime()})
                 .then(newVar => {
-                    if(newVar) setGamesForToday(newVar)
+                    if(newVar) setGamesForToday(addNowPlaying(newVar))
                 })
                 .catch(reason => console.log(reason))
         };
@@ -29,14 +40,11 @@ const PartitePage: React.FC = () => {
     useEffect(() => {
         // Controlla l'orario corrente e imposta lo stato di nowPlaying
         const interval = setInterval(() => {
-            const now = new Date().toISOString();
-
-            const isBetween = !!gamesForToday && now >= gamesForToday[0].startDate && now <= gamesForToday[0].endDate;
-            setNowPlaying(isBetween);
+            setGamesForToday(addNowPlaying(gamesForToday))
         }, 1000); // Controlla ogni secondo
 
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
-    }, []);
+    }, [gamesForToday]);
 
     useEffect(() => {
 
@@ -65,15 +73,14 @@ const PartitePage: React.FC = () => {
             </div>
             <div className={'partita-grid'}>
                 {gamesForToday?.map((partita, index) => {
-                    const startDate = new Date(partita.startDate);
                     return (
                         <div key={index} className={'partita-item'}>
                             <p className={'partita-details'}>
-                                {partita.team1} vs {partita.team2} @{startDate.toLocaleString()}
+                                {partita.team1} vs {partita.team2} @{new Date(partita.startDate).toLocaleString()}
                             </p>
                             <p className={'partita-details'}>
                                 {partita.pointsTeam1} - {partita.pointsTeam2}
-                                {nowPlaying && <span
+                                {partita.nowPlaying && <span
                                     className={'now-playing'}>Now Playing</span>} {/* Didascalia "Now Playing" se nell'orario indicato */}
                             </p>
                             <p>Vincitore: {partita.winner}</p> {/* Mostra il vincitore */}

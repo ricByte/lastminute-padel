@@ -7,17 +7,27 @@ import Link from "next/link";
 import {useAction} from "convex/react";
 import {PersistedGame} from "@/convex/myFunctions";
 
+type Game = PersistedGame & { nowPlaying: boolean }
 export default function Page({ params }: { params: { team: string } }) {
     const actionRetrieve = useAction(api.myFunctions.getGameForTeam);
+    const [gamesForToday, setGamesForToday]: [Game[]|undefined, Dispatch<SetStateAction<Game[]|undefined>>] = useState();
 
-    const [nowPlaying, setNowPlaying] = useState(false);
-    const [gamesForToday, setGamesForToday]: [PersistedGame[]|undefined, Dispatch<SetStateAction<PersistedGame[]|undefined>>] = useState();
+    function addNowPlaying(persistedGames: PersistedGame[]|undefined|Game[]): Game[]|undefined {
+        const now = new Date().toISOString();
+        return persistedGames?.map(game => {
+            const isBetween = now >= game.startDate && now <= game.endDate;
+            return {
+                ...game,
+                nowPlaying: isBetween
+            }
+        });
+    }
 
     useEffect(()=> {
         const callback = () => {
             actionRetrieve({team: `Team ${params.team.substring(4)}`})
                 .then(newVar => {
-                    if(newVar) setGamesForToday(newVar)
+                    if(newVar) setGamesForToday(addNowPlaying(newVar))
                 })
                 .catch(reason => console.log(reason))
         };
@@ -29,10 +39,7 @@ export default function Page({ params }: { params: { team: string } }) {
     useEffect(() => {
         // Controlla l'orario corrente e imposta lo stato di nowPlaying
         const interval = setInterval(() => {
-            const now = new Date().toISOString();
-
-            const isBetween = !!gamesForToday && now >= gamesForToday[0].startDate && now <= gamesForToday[0].endDate;
-            setNowPlaying(isBetween);
+            setGamesForToday(addNowPlaying(gamesForToday))
         }, 1000); // Controlla ogni secondo
 
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
@@ -73,7 +80,7 @@ export default function Page({ params }: { params: { team: string } }) {
                             </p>
                             <p className={'partita-details'}>
                                 {partita.pointsTeam1} - {partita.pointsTeam2}
-                                {nowPlaying && <span
+                                {partita.nowPlaying && <span
                                     className={'now-playing'}>Now Playing</span>} {/* Didascalia "Now Playing" se nell'orario indicato */}
                             </p>
                             <p>Vincitore: {partita.winner}</p> {/* Mostra il vincitore */}
