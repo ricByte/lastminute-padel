@@ -15,7 +15,7 @@ export default function Page({ params }: { params: { team: string } }) {
 
     useEffect(()=> {
         const callback = () => {
-            actionRetrieve({team: params.team.substring(4)})
+            actionRetrieve({team: `Team ${params.team.substring(4)}`})
                 .then(newVar => {
                     if(newVar) setGamesForToday(newVar)
                 })
