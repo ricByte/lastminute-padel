@@ -7,16 +7,27 @@ import Link from "next/link";
 import {useAction} from "convex/react";
 import {PersistedGame} from "@/convex/myFunctions";
 
+type Game = PersistedGame & { nowPlaying: boolean }
 const PartitePage: React.FC = () => {
     const actionRetrieve = useAction(api.myFunctions.retrieveGames);
 
-    const [nowPlaying, setNowPlaying] = useState(false);
-    const [gamesForToday, setGamesForToday]: [PersistedGame[]|undefined, Dispatch<SetStateAction<PersistedGame[]|undefined>>] = useState();
+    const [gamesForToday, setGamesForToday]: [Game[]|undefined, Dispatch<SetStateAction<Game[]|undefined>>] = useState();
+
+    function addNowPlaying(persistedGames: PersistedGame[]|undefined|Game[]): Game[]|undefined {
+        const now = new Date().toISOString();
+        return persistedGames?.map(game => {
+            const isBetween = now >= game.startDate && now <= game.endDate;
+            return {
+                ...game,
+                nowPlaying: isBetween
+            }
+        });
+    }
 
     useEffect(()=> {
         const effect = async () => {
             const newVar = await actionRetrieve({date: new Date().getTime()});
-            if(newVar) setGamesForToday(newVar)
+            if(newVar) setGamesForToday(addNowPlaying(newVar))
         };
         effect()
             .then(()=>console.log("DONE"))
@@ -27,10 +38,7 @@ const PartitePage: React.FC = () => {
     useEffect(() => {
         // Controlla l'orario corrente e imposta lo stato di nowPlaying
         const interval = setInterval(() => {
-            const now = new Date().toISOString();
-
-            const isBetween = !!gamesForToday && now >= gamesForToday[0].startDate && now <= gamesForToday[0].endDate;
-            setNowPlaying(isBetween);
+            setGamesForToday(addNowPlaying(gamesForToday))
         }, 1000); // Controlla ogni secondo
 
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
@@ -40,37 +48,37 @@ const PartitePage: React.FC = () => {
 
     }, [gamesForToday]);
 
-    const updateGame = useAction(api.myFunctions.updateGame);
-    const updateGameOnClick = (index: number)=>{
-        console.log("onBlur", index);
-        if(gamesForToday) {
-            const gameToUpdate = gamesForToday[index];
-            updateGame({
-                id: gameToUpdate._id,
-                winner: gameToUpdate.winner,
-                pointsTeam1: gameToUpdate.pointsTeam1,
-                pointsTeam2: gameToUpdate.pointsTeam2
-            })
-                .then((r) => {
-                    switch (r.tag) {
-                        case "left":
-                            return "KO";
-                        case "right": {
-                            actionRetrieve({date: 124567})
-                                .then((newVar) => {
-                                    if (newVar) setGamesForToday(newVar)
-                                })
-                                .catch((e) => {
-                                    console.log('error', e)
-                                })
-                        }
-                    }
-                })
-                .catch((e) => {
-                    console.log('error', e)
-                })
-        }
-    }
+     const updateGame = useAction(api.myFunctions.updateGame);
+     const updateGameOnClick = (index: number)=>{
+         console.log("onBlur", index);
+         if(gamesForToday) {
+             const gameToUpdate = gamesForToday[index];
+             updateGame({
+                 id: gameToUpdate._id,
+                 winner: gameToUpdate.winner,
+                 pointsTeam1: gameToUpdate.pointsTeam1,
+                 pointsTeam2: gameToUpdate.pointsTeam2
+             })
+                 .then((r) => {
+                     switch (r.tag) {
+                         case "left":
+                             return "KO";
+                         case "right": {
+                             actionRetrieve({date: 124567})
+                                 .then((newVar) => {
+                                     if (newVar) setGamesForToday(addNowPlaying(newVar))
+                                 })
+                                 .catch((e) => {
+                                     console.log('error', e)
+                                 })
+                         }
+                     }
+                 })
+                 .catch((e) => {
+                     console.log('error', e)
+                 })
+         }
+     }
 
     const handleWinnerInputChange = (index: number)=>(event: React.ChangeEvent<HTMLInputElement>) => {
         if (gamesForToday)
@@ -95,7 +103,7 @@ const PartitePage: React.FC = () => {
     };
 
     const handlePt2InputChange = (index: number)=>(event: React.ChangeEvent<HTMLInputElement>) => {
-        if (gamesForToday)
+         if (gamesForToday)
         {
             const persistedGames = [
                 ...gamesForToday,
@@ -147,7 +155,7 @@ const PartitePage: React.FC = () => {
                                 onBlur={() => updateGameOnClick(index)}
                                 className={'search-input'}
                             />
-                                {nowPlaying && <span
+                                {partita.nowPlaying && <span
                                     className={'now-playing'}>Now Playing</span>} {/* Didascalia "Now Playing" se nell'orario indicato */}
                             </p>
                             <p>Vincitore: <input
