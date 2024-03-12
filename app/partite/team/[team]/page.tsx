@@ -43,11 +43,9 @@ export default function Page({ params }: { params: { team: string } }) {
         }, 1000); // Controlla ogni secondo
 
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
-    }, []);
-
-    useEffect(() => {
-
     }, [gamesForToday]);
+
+  
 
     // const performMyAction = useMutation(api.myFunctions.addGames);
     // const addGame = () => {
