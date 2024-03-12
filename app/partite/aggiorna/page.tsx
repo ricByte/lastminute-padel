@@ -15,7 +15,7 @@ const PartitePage: React.FC = () => {
 
     useEffect(()=> {
         const effect = async () => {
-            const newVar = await actionRetrieve({date: 124567});
+            const newVar = await actionRetrieve({date: new Date().getTime()});
             if(newVar) setGamesForToday(newVar)
         };
         effect()
