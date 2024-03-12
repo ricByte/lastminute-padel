@@ -1,13 +1,13 @@
 import "./globals.css";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import type {Metadata} from "next";
+import {Inter} from "next/font/google";
 import ConvexClientProvider from "./ConvexClientProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "My App Title",
-  description: "My piono description",
+  title: "lastminute.com | padel",
+  description: "Padel tournament 2024 of lastminute.com",
 };
 
 export default function RootLayout({
