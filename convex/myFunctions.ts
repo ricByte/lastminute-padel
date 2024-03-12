@@ -71,6 +71,7 @@ export const getGameFor = query({
         team: v.string()
     },
     handler: async (ctx, args) => {
+        console.log('team', args)
         const promise = await ctx.db
             .query("games")
             .order("asc")
@@ -105,7 +106,7 @@ export const getGameForTeam = action({
 
 
         try {
-            console.log(`Retrieving groups`);
+            console.log(`Retrieving groups for`, args);
             const data: PersistedGame[] = await ctx.runQuery(api.myFunctions.getGameFor, args);
             console.log(data);
             return data
