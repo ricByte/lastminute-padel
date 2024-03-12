@@ -49,7 +49,7 @@ export const gamesForDay = query({
             console.log(`tomorrow at night: ${tomorrow.toISOString()}`)
             const promise = await ctx.db
                 .query("games")
-                .filter((q) => q.lte(q.field("startDate"), today.toISOString()) && q.gte(q.field("endDate"), tomorrow.toISOString()))
+                .filter((q) => q.gte(q.field("startDate"), today.toISOString()) && q.lte(q.field("endDate"), tomorrow.toISOString()))
                 .order("asc")
                 .collect();
             console.log(promise)
