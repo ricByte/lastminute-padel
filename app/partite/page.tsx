@@ -15,7 +15,7 @@ const PartitePage: React.FC = () => {
 
     useEffect(()=> {
         const callback = () => {
-            actionRetrieve({date: 124567})
+            actionRetrieve({date: new Date().getTime()})
                 .then(newVar => {
                     if(newVar) setGamesForToday(newVar)
                 })

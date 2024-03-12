@@ -43,11 +43,13 @@ export const gamesForDay = query({
         console.log(`today is: ${today.toISOString()}`)
         today.setHours(0)
         today.setTime(0)
+        console.log(`today at night: ${today.toISOString()}`)
         const tomorrow = new Date(today.getTime());
         tomorrow.setDate(today.getDate() + 1)
+        console.log(`tomorrow at night: ${tomorrow.toISOString()}`)
         const promise = await ctx.db
             .query("games")
-            // .filter((q) => q.lte(q.field("startDate"), today.toISOString()) && q.gte(q.field("endDate"), tomorrow.toISOString()))
+            .filter((q) => q.lte(q.field("startDate"), today.toISOString()) && q.gte(q.field("endDate"), tomorrow.toISOString()))
             .order("asc")
             .collect();
         console.log(promise)
