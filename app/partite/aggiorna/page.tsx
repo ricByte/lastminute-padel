@@ -60,7 +60,7 @@ const PartitePage: React.FC = () => {
                          case "left":
                              return "KO";
                          case "right": {
-                             actionRetrieve({date: 124567})
+                             actionRetrieve({date: new Date().getTime()})
                                  .then((newVar) => {
                                      if (newVar) setGamesForToday(addNowPlaying(newVar))
                                  })
