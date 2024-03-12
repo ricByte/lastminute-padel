@@ -8,6 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "lastminute.com | padel",
   description: "Padel tournament 2024 of lastminute.com",
+  robots: {index: false}
 };
 
 export default function RootLayout({
