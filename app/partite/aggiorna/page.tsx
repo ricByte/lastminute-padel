@@ -42,10 +42,6 @@ const PartitePage: React.FC = () => {
         }, 1000); // Controlla ogni secondo
 
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
-    }, []);
-
-    useEffect(() => {
-
     }, [gamesForToday]);
 
      const updateGame = useAction(api.myFunctions.updateGame);
