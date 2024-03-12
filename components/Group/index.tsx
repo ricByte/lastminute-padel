@@ -3,7 +3,7 @@ import Team from '@/components/Team';
 import '../../app/globals.css';
 
 interface GroupProps {
-    teams: { name: string; members: string[] }[];
+    teams: { name: string; members: string[]; id?: string }[];
     name: string;
 }
 

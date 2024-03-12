@@ -33,7 +33,7 @@ const PadelPage: React.FC = () => {
                     Qui potrete trovare i team con i relativi gironi
                 </p>
             </div>
-            <div>
+            <div className={'padel-intro'}>
                 {groups?.map((group, index) => (
                     <Group key={index} {...group} />
                 ))}
