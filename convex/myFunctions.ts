@@ -26,7 +26,13 @@ export type PersistedGame = {
     team1: string;
     team2: string;
 }
-
+export type PersistedPhase = {
+    _id: Id<"phase">;
+    _creationTime: number;
+    day: string;
+    label: string;
+    slug: string;
+}
 export type UpdateGameError = {
     reason: string
 }
@@ -79,6 +85,21 @@ export const getGroups = query({
         return promise;
     },
 });
+
+export const getPhases = query({
+    args: {
+        slug: v.string()
+    },
+    handler: async (ctx, args) => {
+        const promise = await ctx.db
+            .query("phase")
+            .order("asc")
+            .filter(q => q.eq(q.field("slug"), args.slug))
+            .collect();
+        console.log(promise)
+        return promise;
+    },
+});
 export const getGameFor = query({
     args: {
         team: v.string()
@@ -125,6 +146,46 @@ export const getGameForTeam = action({
             return data
         } catch (e) {
             console.log(e)
+        }
+
+    },
+});
+
+export const getGameForPhase = action({
+    // Validators for arguments.
+    args: {
+        slug: v.string()
+    },
+
+    // Action implementation.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    handler: async (ctx, args) => {
+        //// Use the browser-like `fetch` API to send HTTP requests.
+        //// See https://docs.convex.dev/functions/actions#calling-third-party-apis-and-using-npm-packages.
+        // const response = await ctx.fetch("https://api.thirdpartyservice.com");
+        // const data = await response.json();
+
+        //// Query data by running Convex queries.
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+
+
+        let persistedPhases: PersistedPhase[];
+        try {
+            console.log(`Retrieving groups for`, args);
+            persistedPhases = await ctx.runQuery(api.myFunctions.getPhases, args);
+            console.log(persistedPhases);
+            persistedPhases.map(async (value) => {
+                console.log(`Retrieving groups for`, args);
+                const games: PersistedGame[]|null = await ctx.runAction(api.myFunctions.retrieveGames, {date:new Date(value.day).getTime()});
+                return {
+                    ...value,
+                    ...(games && { games })
+                }
+            })
+        } catch (e) {
+            console.error(e)
         }
 
     },
