@@ -32,6 +32,11 @@ export default defineSchema(
                 id: v.optional(v.string())
             })
         )
+    }),
+    phase: defineTable({
+        day:v.string(),
+        label:v.string(),
+        slug: v.string()
     })
   },
   // If you ever get an error about schema mismatch
