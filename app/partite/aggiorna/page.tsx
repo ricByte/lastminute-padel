@@ -6,6 +6,7 @@ import "@/app/globals.css";
 import Link from "next/link";
 import {useAction} from "convex/react";
 import {PersistedGame} from "@/convex/myFunctions";
+import {EitherTag} from "@/lib/Either";
 
 type Game = PersistedGame & { nowPlaying: boolean }
 const PartitePage: React.FC = () => {
@@ -56,10 +57,11 @@ const PartitePage: React.FC = () => {
                  pointsTeam2: gameToUpdate.pointsTeam2
              })
                  .then((r) => {
-                     switch (r.tag) {
-                         case "left":
-                             return "KO";
-                         case "right": {
+                     switch (r.is()) {
+                         case EitherTag.LEFT:
+                             console.log('error', r.value)
+                             break;
+                         case EitherTag.RIGHT: {
                              actionRetrieve({date: new Date().getTime()})
                                  .then((newVar) => {
                                      if (newVar) setGamesForToday(addNowPlaying(newVar))
@@ -67,6 +69,7 @@ const PartitePage: React.FC = () => {
                                  .catch((e) => {
                                      console.log('error', e)
                                  })
+                             break;
                          }
                      }
                  })

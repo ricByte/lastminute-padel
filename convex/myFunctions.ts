@@ -3,13 +3,10 @@ import {action, mutation, query} from "./_generated/server";
 import {api} from "./_generated/api";
 import {queryWithAuth} from "@convex-dev/convex-lucia-auth";
 import {Id} from "./_generated/dataModel";
+import {Either} from "../lib/Either";
 
 // Write your Convex functions in any file inside this directory (`convex`).
 // See https://docs.convex.dev/functions for more.
-export type Left<T> = { tag: "left", value: T };
-export type Right<T> = { tag: "right", value: T };
-export type Either<L, R> = Left<L> | Right<R>;
-
 
 export type PersistedGroup = {
     _id: Id<"groups">;
@@ -178,13 +175,13 @@ export const updateGame = action({
                 const a: PersistedGame | null = await ctx.runQuery(api.myFunctions.getGame, {
                     id: args.id
                 });
-                if (a != null) return {tag: "right", value: a};
-                return {tag: "left", value: {reason: 'Error after updating'}}
+                if (a != null) return Either.right<UpdateGameError, PersistedGame>(a);
+                return Either.left<UpdateGameError, PersistedGame>({reason: 'Error after updating'})
             }
-            return {tag: "left", value: {reason: 'Not found'}}
+            return Either.left<UpdateGameError, PersistedGame>({reason: 'Not found'})
         } catch (e) {
             console.log(e)
-            return {tag: "left", value: {reason: "Unexpected error during update game"}}
+            return Either.left<UpdateGameError, PersistedGame>({reason: "Unexpected error during update game"})
         }
 
     },
