@@ -27,7 +27,7 @@ const PartitePage: React.FC = () => {
 
     useEffect(()=> {
         const effect = async () => {
-            const newVar = await actionRetrieve({date: new Date().getTime()});
+            const newVar = await actionRetrieve({});
             if(newVar) setGamesForToday(addNowPlaying(newVar))
         };
         effect()
@@ -62,7 +62,7 @@ const PartitePage: React.FC = () => {
                              console.log('error', r.value)
                              break;
                          case EitherTag.RIGHT: {
-                             actionRetrieve({date: new Date().getTime()})
+                             actionRetrieve({})
                                  .then((newVar) => {
                                      if (newVar) setGamesForToday(addNowPlaying(newVar))
                                  })

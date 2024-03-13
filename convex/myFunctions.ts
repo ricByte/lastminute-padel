@@ -255,7 +255,7 @@ export const updateGame = action({
 export const retrieveGames = action({
     // Validators for arguments.
     args: {
-        date: v.number()
+        date: v.optional(v.any()),
     },
 
     // Action implementation.
@@ -274,9 +274,7 @@ export const retrieveGames = action({
 
         try {
             console.log(`Retrieving for date: ${args.date}`);
-            const data: PersistedGame[] = await ctx.runQuery(api.myFunctions.gamesForDay, {
-                date: args.date
-            });
+            const data: PersistedGame[] = await ctx.runQuery(api.myFunctions.gamesForDay, args);
             console.log(data);
             return data
         } catch (e) {
