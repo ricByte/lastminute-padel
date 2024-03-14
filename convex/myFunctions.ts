@@ -176,14 +176,14 @@ export const getGameForPhase = action({
             console.log(`Retrieving groups for`, args);
             persistedPhases = await ctx.runQuery(api.myFunctions.getPhases, args);
             console.log(persistedPhases);
-            persistedPhases.map(async (value) => {
-                console.log(`Retrieving groups for`, args);
+            await Promise.all(persistedPhases.map(async (value) => {
+                console.log(`Retrieving games for`, args);
                 const games: PersistedGame[]|null = await ctx.runAction(api.myFunctions.retrieveGames, {date: Date.parse(value.day)});
                 return {
                     ...value,
                     ...(games && { games })
                 }
-            })
+            }))
         } catch (e) {
             console.error(e)
         }
