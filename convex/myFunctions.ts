@@ -178,7 +178,7 @@ export const getGameForPhase = action({
             console.log(persistedPhases);
             persistedPhases.map(async (value) => {
                 console.log(`Retrieving groups for`, args);
-                const games: PersistedGame[]|null = await ctx.runAction(api.myFunctions.retrieveGames, {date:new Date(value.day).getTime()});
+                const games: PersistedGame[]|null = await ctx.runAction(api.myFunctions.retrieveGames, {date: Date.parse(value.day)});
                 return {
                     ...value,
                     ...(games && { games })
