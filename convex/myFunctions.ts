@@ -88,13 +88,18 @@ export const getGroups = query({
 
 export const getPhases = query({
     args: {
-        slug: v.string()
+        slug: v.optional(v.string())
     },
     handler: async (ctx, args) => {
-        const promise = await ctx.db
+        let query = ctx.db
             .query("phase")
-            .order("asc")
-            .filter(q => q.eq(q.field("slug"), args.slug))
+            .order("asc");
+
+        if(args.slug) {
+            query = query.filter(q => q.eq(q.field("slug"), args.slug))
+        }
+        
+        const promise = await query
             .collect();
         console.log(promise)
         return promise;
