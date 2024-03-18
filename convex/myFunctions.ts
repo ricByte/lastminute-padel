@@ -227,8 +227,10 @@ export const getGameForPhase = action({
 
 function calculatePoints(pointsTeam2: number, pointsTeam1: number) {
     if((pointsTeam2 >= 9)||(pointsTeam1 >= 9)) {
+        console.log("3")
         return 3
     }
+    console.log("2")
     return 2;
 }
 
@@ -296,9 +298,11 @@ export const doRanking = action({
                         }
                     }
                     console.log("winner",winner)
-                    console.log("winner",loser)
+                    console.log("loser",loser)
                     const winnerSaved = results.get(winner.name);
                     const loserSaved = results.get(loser.name);
+                    console.log(`winnerSaved:${JSON.stringify(winnerSaved)}`)
+                    console.log(`loserSaved:${JSON.stringify(loserSaved)}`)
                     console.log("assignment")
                     results.set(game.winner, {
                         teamName: team1,
