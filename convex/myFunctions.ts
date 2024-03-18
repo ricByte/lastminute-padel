@@ -304,22 +304,27 @@ export const doRanking = action({
                     console.log(`winnerSaved:${JSON.stringify(winnerSaved)}`)
                     console.log(`loserSaved:${JSON.stringify(loserSaved)}`)
                     console.log("assignment")
-                    results.set(game.winner, {
+                    const value = {
                         teamName: team1,
                         points: (winnerSaved?.points || 0) + calculatePoints(game.pointsTeam2!, game.pointsTeam1!),
                         games: (winnerSaved?.games || 0) + 1,
                         wonGames: (winnerSaved?.wonGames || 0) + 1,
                         lostGames: (winnerSaved?.lostGames || 0),
                         totalPoints: (winnerSaved?.totalPoints || 0) + winner.points!
-                    })
-                    results.set(loser.name, {
+                    };
+                    results.set(game.winner, value)
+                    const value1 = {
                         teamName: team1,
                         points: (loserSaved?.points || 0),
                         games: (loserSaved?.games || 0) + 1,
                         wonGames: (loserSaved?.wonGames || 0),
                         lostGames: (loserSaved?.lostGames || 0) + 1,
                         totalPoints: (loserSaved?.totalPoints || 0) + winner.points!
-                    })
+                    };
+                    results.set(loser.name, value1)
+
+                    console.log(`winner persited:${JSON.stringify(value)}`)
+                    console.log(`loser persisted:${JSON.stringify(value1)}`)
                 } else {
                     const team1 = results.get(game.team1);
                     const team2  = results.get(game.team2);
