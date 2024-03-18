@@ -5,13 +5,15 @@ import {api} from "@/convex/_generated/api";
 import "@/app/globals.css";
 import Link from "next/link";
 import {useAction} from "convex/react";
-import {PersistedGame} from "@/convex/myFunctions";
+import {PersistedGame, PersistedPhase} from "@/convex/myFunctions";
 
 type Game = PersistedGame & { nowPlaying: boolean }
 const PartitePage: React.FC = () => {
     const actionRetrieve = useAction(api.myFunctions.retrieveGames);
+    const actionRetrievePhases = useAction(api.myFunctions.getPhasesAction);
 
     const [gamesForToday, setGamesForToday]: [Game[]|undefined, Dispatch<SetStateAction<Game[]|undefined>>] = useState();
+    const [phases, setPhases]: [PersistedPhase[]|undefined, Dispatch<SetStateAction<PersistedPhase[]|undefined>>] = useState();
 
     function addNowPlaying(persistedGames: PersistedGame[]|undefined|Game[]): Game[]|undefined {
         const now = new Date().toISOString();
@@ -35,6 +37,17 @@ const PartitePage: React.FC = () => {
         const interval = setInterval( callback, 60*1000); // Controlla ogni minuto
         callback();
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
+    }, []);
+
+    useEffect(()=> {
+        const callback = () => {
+            actionRetrievePhases({})
+                .then(phases => {
+                    if(phases) setPhases(phases)
+                })
+                .catch(reason => console.log(reason))
+        };
+        callback();
     }, []);
 
     useEffect(() => {
@@ -71,10 +84,17 @@ const PartitePage: React.FC = () => {
             <div>
                 <h1 className={'padel-title'}>Partite</h1>
             </div>
+            <div>
+                {phases?.map((p, index)=>{
+                    return (<p key={`phase${index}`} style={{border:'1px solid black', borderRadius: '50%', padding: 5}}>
+                        <Link href={`/giornata/${p.slug}`}>{p.label}</Link>
+                    </p>)
+                })}
+            </div>
             <div className={'partita-grid'}>
                 {gamesForToday?.map((partita, index) => {
                     return (
-                        <div key={index} className={'partita-item'}>
+                        <div key={`game${index}`} className={'partita-item'}>
                             <p className={'partita-details'}>
                                 {partita.team1} vs {partita.team2} @{new Date(partita.startDate).toLocaleString()}
                             </p>

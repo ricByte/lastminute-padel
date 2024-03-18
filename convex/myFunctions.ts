@@ -156,6 +156,25 @@ export const getGameForTeam = action({
     },
 });
 
+export const getPhasesAction = action({
+    // Validators for arguments.
+    args: {
+        slug:v.optional(v.string())
+    },
+
+    handler: async (ctx, args) => {
+        try {
+            console.log(`Retrieving phases action for`, args);
+            const data: PersistedPhase[] = await ctx.runQuery(api.myFunctions.getPhases, args);
+            return data
+        } catch (e) {
+            console.log(e)
+        }
+
+    },
+});
+
+
 export const getGameForPhase = action({
     // Validators for arguments.
     args: {
