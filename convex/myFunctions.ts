@@ -177,8 +177,9 @@ export const getGameForPhase = action({
             persistedPhases = await ctx.runQuery(api.myFunctions.getPhases, args);
             console.log(persistedPhases);
             await Promise.all(persistedPhases.map(async (value) => {
-                console.log(`Retrieving games for`, args);
+                console.log(`Retrieving games for ${Date.parse(value.day)}`, args);
                 const games: PersistedGame[]|null = await ctx.runAction(api.myFunctions.retrieveGames, {date: Date.parse(value.day)});
+                console.log("games:",games)
                 return {
                     ...value,
                     ...(games && { games })
