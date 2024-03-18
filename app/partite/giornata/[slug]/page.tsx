@@ -8,8 +8,8 @@ import {useAction} from "convex/react";
 import {PersistedGame} from "@/convex/myFunctions";
 
 type Game = PersistedGame & { nowPlaying: boolean }
-export default function Page({ params }: { params: { team: string } }) {
-    const actionRetrieve = useAction(api.myFunctions.getGameForTeam);
+export default function Page({ params }: { params: { slug: string } }) {
+    const actionRetrieve = useAction(api.myFunctions.getGameForPhase);
     const [gamesForToday, setGamesForToday]: [Game[]|undefined, Dispatch<SetStateAction<Game[]|undefined>>] = useState();
 
     function addNowPlaying(persistedGames: PersistedGame[]|undefined|Game[]): Game[]|undefined {
@@ -25,9 +25,9 @@ export default function Page({ params }: { params: { team: string } }) {
 
     useEffect(()=> {
         const callback = () => {
-            actionRetrieve({team: `Team ${params.team.substring(4)}`})
+            actionRetrieve({slug: params.slug})
                 .then(newVar => {
-                    if(newVar) setGamesForToday(addNowPlaying(newVar))
+                    if(newVar && newVar[0].games) setGamesForToday(addNowPlaying(newVar[0].games))
                 })
                 .catch(reason => console.log(reason))
         };
@@ -44,24 +44,6 @@ export default function Page({ params }: { params: { team: string } }) {
 
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
     }, [gamesForToday]);
-
-  
-
-    // const performMyAction = useMutation(api.myFunctions.addGames);
-    // const addGame = () => {
-    //     performMyAction({
-    //         endDate: "2024-03-10T17:30:00.000Z",
-    //         startDate: "2024-03-12T18:00:00.000Z",
-    //         team1: "Team1",
-    //         team2: "Team2"
-    //     }).then((r)=>console.log(r))
-    //         .catch(()=>console.log("KO"))
-    // };
-    // const performMyAction2 = useAction(api.myFunctions.retrieveGames);
-    // const retrieveGames = () => {
-    //     performMyAction2({date: new Date().toISOString()}).then((r)=>console.log(r))
-    //         .catch(()=>console.log("KO"))
-    // };
 
     return (
         <div className={'partite-container'}>
