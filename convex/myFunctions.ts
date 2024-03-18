@@ -232,6 +232,25 @@ function calculatePoints(pointsTeam2: number, pointsTeam1: number) {
     return 2;
 }
 
+function setGame(teamName: string, game: {
+    teamName: string;
+    ranking?: number;
+    points: number;
+    games: number;
+    wonGames: number;
+    lostGames: number;
+    totalPoints: number
+} | undefined) {
+    return {
+        teamName: teamName,
+        points: (game?.points || 0),
+        games: (game?.games || 0),
+        wonGames: (game?.wonGames || 0),
+        lostGames: (game?.lostGames || 0),
+        totalPoints: (game?.totalPoints || 0)
+    };
+}
+
 export const doRanking = action({
     args: {
         slug: v.string()
@@ -293,6 +312,11 @@ export const doRanking = action({
                         lostGames: (loserSaved?.lostGames || 0) + 1,
                         totalPoints: (loserSaved?.totalPoints || 0) + winner.points!
                     })
+                } else {
+                    const team1 = results.get(game.team1);
+                    const team2  = results.get(game.team2);
+                    results.set(game.team1, setGame(game.team1, team1))
+                    results.set(game.team1, setGame(game.team2, team2))
                 }
             });
             const a: {
@@ -304,7 +328,7 @@ export const doRanking = action({
                 lostGames: number,
                 totalPoints: number,
             }[] = []
-            results!.forEach((value, key) => (a.push({...value})))
+            results.forEach((value) => (a.push({...value})))
             return a
         } catch (e) {
             console.error(e)
