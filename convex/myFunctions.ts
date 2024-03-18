@@ -243,7 +243,7 @@ function setGame(teamName: string, game: {
     lostGames: number;
     totalPoints: number
 } | undefined) {
-
+    console.log("setGame game", game)
     const newVar = {
         teamName: teamName,
         points: (game?.points || 0),
@@ -319,7 +319,7 @@ export const doRanking = action({
                         games: (loserSaved?.games || 0) + 1,
                         wonGames: (loserSaved?.wonGames || 0),
                         lostGames: (loserSaved?.lostGames || 0) + 1,
-                        totalPoints: (loserSaved?.totalPoints || 0) + winner.points!
+                        totalPoints: (loserSaved?.totalPoints || 0) + loser.points!
                     };
                     results.set(loser.name, value1)
 
