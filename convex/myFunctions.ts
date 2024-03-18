@@ -272,8 +272,11 @@ export const doRanking = action({
                             points: game.pointsTeam2
                         }
                     }
+                    console.log("winner",winner)
+                    console.log("winner",loser)
                     const winnerSaved = results.get(winner.name);
                     const loserSaved = results.get(loser.name);
+                    console.log("assignment")
                     results.set(game.winner, {
                         teamName: team1,
                         points: (winnerSaved?.points || 0) + calculatePoints(game.pointsTeam2!, game.pointsTeam1!),
