@@ -244,7 +244,7 @@ export const doRanking = action({
         try {
             console.log(`Retrieving groups for`, args);
             const allGames: PersistedGame[]|null = await ctx.runAction(api.myFunctions.retrieveGames, {});
-            let results: Map<string, {
+            const results: Map<string, {
                 teamName: string,
                 ranking?: number,
                 points: number,
@@ -252,7 +252,7 @@ export const doRanking = action({
                 wonGames: number,
                 lostGames: number,
                 totalPoints: number,
-            }>;
+            }> = new Map();
             allGames?.forEach((game) => {
                 if (game.winner) {
                     let loser = {
