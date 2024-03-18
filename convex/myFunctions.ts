@@ -333,6 +333,9 @@ export const doRanking = action({
                 totalPoints: number,
             }[] = []
             results.forEach((value) => (a.push({...value})))
+            await ctx.runMutation(api.myFunctions.generateRanking, {
+                ranking: a
+            })
             return a
         } catch (e) {
             console.error(e)
@@ -360,6 +363,30 @@ export const addWinner = mutation({
             pointsTeam1: args.pointsTeam1,
             pointsTeam2: args.pointsTeam2
         });
+    },
+});
+
+
+export const generateRanking = mutation({
+    args: {
+        ranking: v.array(v.object({
+            teamName: v.string(),
+            ranking : v.optional(v.number()),
+            points: v.number(),
+            games: v.number(),
+            wonGames: v.number(),
+            lostGames: v.number(),
+            totalPoints: v.number(),
+        }))
+    },
+    handler: async (ctx, args) => {
+        for (const ranking of args.ranking) {
+            const index = args.ranking.indexOf(ranking);
+            await ctx.db.insert("ranking", {
+                ...ranking,
+                ranking: index
+            })
+        }
     },
 });
 
