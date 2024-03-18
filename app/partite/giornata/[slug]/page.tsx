@@ -5,12 +5,17 @@ import {api} from "@/convex/_generated/api";
 import "@/app/globals.css";
 import Link from "next/link";
 import {useAction} from "convex/react";
-import {PersistedGame} from "@/convex/myFunctions";
+import {PersistedGame, PersistedPhase} from "@/convex/myFunctions";
+import {undefined} from "zod";
 
 type Game = PersistedGame & { nowPlaying: boolean }
 export default function Page({ params }: { params: { slug: string } }) {
     const actionRetrieve = useAction(api.myFunctions.getGameForPhase);
+    const actionRetrievePhases = useAction(api.myFunctions.getPhasesAction);
+
     const [gamesForToday, setGamesForToday]: [Game[]|undefined, Dispatch<SetStateAction<Game[]|undefined>>] = useState();
+    const [phases, setPhases]: [PersistedPhase[]|undefined, Dispatch<SetStateAction<PersistedPhase[]|undefined>>] = useState();
+    const [phase, setPhase]: [PersistedPhase|undefined, Dispatch<SetStateAction<PersistedPhase|undefined>>] = useState();
 
     function addNowPlaying(persistedGames: PersistedGame[]|undefined|Game[]): Game[]|undefined {
         const now = new Date().toISOString();
@@ -27,7 +32,16 @@ export default function Page({ params }: { params: { slug: string } }) {
         const callback = () => {
             actionRetrieve({slug: params.slug})
                 .then(newVar => {
-                    if(newVar && newVar[0].games) setGamesForToday(addNowPlaying(newVar[0].games))
+                    if(newVar && newVar[0].games) {
+                        setGamesForToday(addNowPlaying(newVar[0].games))
+                        setPhase({
+                            _creationTime:newVar[0]._creationTime,
+                            _id:newVar[0]._id,
+                            day:newVar[0].day,
+                            label:newVar[0].label,
+                            slug:newVar[0].slug
+                        })
+                    }
                 })
                 .catch(reason => console.log(reason))
         };
@@ -45,12 +59,33 @@ export default function Page({ params }: { params: { slug: string } }) {
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
     }, [gamesForToday]);
 
+    useEffect(()=> {
+        const callback = () => {
+            actionRetrievePhases({})
+                .then(phases => {
+                    if(phases) setPhases(phases)
+                })
+                .catch(reason => console.log(reason))
+        };
+        callback();
+    }, []);
+
     return (
         <div className={'partite-container'}>
             <div>
-                <h1 className={'padel-title'}>Partite di oggi</h1>
+                <h1 className={'padel-title'}>Partite  {phase?.label}</h1>
             </div>
             <div className={'partita-grid'}>
+                <div>
+                    <p className={'phase-item'}>
+                        <Link href={`/partite`}>{'Tutte le partite'}</Link>
+                    </p>
+                    {phases?.map((p, index) => {
+                        return (<p key={`phase${index}`} className={'phase-item'}>
+                            <Link href={`/partite/giornata/${p.slug}`}>{p.label}</Link>
+                        </p>)
+                    })}
+                </div>
                 {gamesForToday?.map((partita, index) => {
                     const startDate = new Date(partita.startDate);
                     return (

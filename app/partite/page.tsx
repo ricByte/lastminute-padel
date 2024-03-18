@@ -82,7 +82,7 @@ const PartitePage: React.FC = () => {
     return (
         <div className={'partite-container'}>
             <div>
-                <h1 className={'padel-title'}>Partite</h1>
+                <h1 className={'padel-title'}>Tutte le partite</h1>
             </div>
             <div>
                 {phases?.map((p, index)=>{

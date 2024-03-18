@@ -66,7 +66,7 @@ export default function Page({ params }: { params: { team: string } }) {
     return (
         <div className={'partite-container'}>
             <div>
-                <h1 className={'padel-title'}>Partite di oggi</h1>
+                <h1 className={'padel-title'}>  {`Partite Team ${params.team.substring(4)}`}</h1>
             </div>
             <div className={'partita-grid'}>
                 {gamesForToday?.map((partita, index) => {

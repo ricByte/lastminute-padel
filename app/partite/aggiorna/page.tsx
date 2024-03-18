@@ -130,7 +130,7 @@ const PartitePage: React.FC = () => {
     return (
         <div className={'partite-container'}>
             <div>
-                <h1 className={'padel-title'}>Partite di oggi</h1>
+                <h1 className={'padel-title'}>Aggiorna partite</h1>
             </div>
             <div className={'partita-grid'}>
                 {gamesForToday?.map((partita, index) => {
