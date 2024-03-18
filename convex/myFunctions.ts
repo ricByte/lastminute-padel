@@ -320,7 +320,7 @@ export const doRanking = action({
                     const team1 = results.get(game.team1);
                     const team2  = results.get(game.team2);
                     results.set(game.team1, setGame(game.team1, team1))
-                    results.set(game.team1, setGame(game.team2, team2))
+                    results.set(game.team2, setGame(game.team2, team2))
                 }
             });
             const a: {
