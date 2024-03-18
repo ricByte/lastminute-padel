@@ -314,7 +314,7 @@ export const doRanking = action({
                     };
                     results.set(game.winner, value)
                     const value1 = {
-                        teamName: team1,
+                        teamName: team2,
                         points: (loserSaved?.points || 0),
                         games: (loserSaved?.games || 0) + 1,
                         wonGames: (loserSaved?.wonGames || 0),
