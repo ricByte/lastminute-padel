@@ -87,7 +87,7 @@ const PartitePage: React.FC = () => {
             <div>
                 {phases?.map((p, index)=>{
                     return (<p key={`phase${index}`} style={{border:'1px solid black', borderRadius: 10, padding: 5, width: 150, textAlign: 'center', display: 'inline-block'}}>
-                        <Link href={`/giornata/${p.slug}`}>{p.label}</Link>
+                        <Link href={`/partite/giornata/${p.slug}`}>{p.label}</Link>
                     </p>)
                 })}
             </div>
