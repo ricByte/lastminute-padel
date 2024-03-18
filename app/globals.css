@@ -263,3 +263,9 @@
 .search-button:hover {
   background-color: #0056b3;
 }
+
+@media (prefers-color-scheme: dark) {
+  .search-input{
+    color: black;
+  }
+}
