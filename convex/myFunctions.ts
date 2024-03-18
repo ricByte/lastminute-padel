@@ -224,6 +224,91 @@ export const getGameForPhase = action({
 
     },
 });
+
+function calculatePoints(pointsTeam2: number, pointsTeam1: number) {
+    if((pointsTeam2 >= 9)||(pointsTeam1 >= 9)) {
+        return 3
+    }
+    return 2;
+}
+
+export const doRanking = action({
+    args: {
+        slug: v.string()
+    },
+
+
+    handler: async (ctx, args) => {
+
+
+        try {
+            console.log(`Retrieving groups for`, args);
+            const allGames: PersistedGame[]|null = await ctx.runAction(api.myFunctions.retrieveGames, {});
+            let results: Map<string, {
+                teamName: string,
+                ranking?: number,
+                points: number,
+                games: number,
+                wonGames: number,
+                lostGames: number,
+                totalPoints: number,
+            }>;
+            allGames?.forEach((game) => {
+                if (game.winner) {
+                    let loser = {
+                        name: game.team1,
+                        points: game.pointsTeam1
+                    };
+                    let winner = {
+                        name: game.team2,
+                        points: game.pointsTeam2
+                    }
+                    const team1 = game.team1;
+                    const team2 = game.team2;
+                    if (game.winner == team2) {
+                        winner = {...loser}
+                        loser = {
+                            name: game.team2,
+                            points: game.pointsTeam2
+                        }
+                    }
+                    const winnerSaved = results.get(winner.name);
+                    const loserSaved = results.get(loser.name);
+                    results.set(game.winner, {
+                        teamName: team1,
+                        points: (winnerSaved?.points || 0) + calculatePoints(game.pointsTeam2!, game.pointsTeam1!),
+                        games: (winnerSaved?.games || 0) + 1,
+                        wonGames: (winnerSaved?.wonGames || 0) + 1,
+                        lostGames: (winnerSaved?.lostGames || 0),
+                        totalPoints: (winnerSaved?.totalPoints || 0) + winner.points!
+                    })
+                    results.set(loser.name, {
+                        teamName: team1,
+                        points: (loserSaved?.points || 0),
+                        games: (loserSaved?.games || 0) + 1,
+                        wonGames: (loserSaved?.wonGames || 0),
+                        lostGames: (loserSaved?.lostGames || 0) + 1,
+                        totalPoints: (loserSaved?.totalPoints || 0) + winner.points!
+                    })
+                }
+            });
+            const a: {
+                teamName: string,
+                ranking?: number,
+                points: number,
+                games: number,
+                wonGames: number,
+                lostGames: number,
+                totalPoints: number,
+            }[] = []
+            results!.forEach((value, key) => (a.push({...value})))
+            return a
+        } catch (e) {
+            console.error(e)
+        }
+
+    },
+});
 export const getGame = query({
     args: {id: v.id("games")},
     handler: async (ctx, args) => {

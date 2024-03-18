@@ -37,6 +37,15 @@ export default defineSchema(
         day:v.string(),
         label:v.string(),
         slug: v.string()
+    }),
+    ranking:defineTable({
+        teamName:v.string(),
+        ranking: v.optional(v.number()),
+        points: v.number(),
+        games: v.number(),
+        wonGames: v.number(),
+        lostGames: v.number(),
+        totalPoints: v.number()
     })
   },
   // If you ever get an error about schema mismatch
