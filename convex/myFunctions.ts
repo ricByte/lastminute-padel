@@ -241,7 +241,8 @@ function setGame(teamName: string, game: {
     lostGames: number;
     totalPoints: number
 } | undefined) {
-    return {
+
+    const newVar = {
         teamName: teamName,
         points: (game?.points || 0),
         games: (game?.games || 0),
@@ -249,6 +250,9 @@ function setGame(teamName: string, game: {
         lostGames: (game?.lostGames || 0),
         totalPoints: (game?.totalPoints || 0)
     };
+
+    console.log("setGame", newVar)
+    return newVar;
 }
 
 export const doRanking = action({
