@@ -90,6 +90,7 @@
 .padel-title {
   font-size: 2rem;
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .padel-text {
@@ -276,4 +277,23 @@
   .search-input{
     color: black;
   }
+}
+/*classifica page*/
+
+
+.classifica-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.classifica-table th,
+.classifica-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.classifica-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
 }

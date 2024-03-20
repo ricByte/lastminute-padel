@@ -36,6 +36,18 @@ export type PersistedPhase = {
 export type UpdateGameError = {
     reason: string
 }
+
+export type PersistedRanking = {
+    _id: Id<"ranking">
+    _creationTime: number
+    teamName: string
+    ranking?: number
+    points: number
+    games: number
+    wonGames: number
+    lostGames: number
+    gamesTotalPoints: number
+}
 export const gamesForDay = query({
     args: {
         date: v.optional(v.any()),
@@ -73,6 +85,30 @@ export const gamesForDay = query({
         }
     },
 });
+export const getRanking = query({
+    args: {},
+    handler: async (ctx, args) => {
+            const rankingList = await ctx.db
+                .query("ranking")
+                .collect();
+            return rankingList.toSorted((a,b)=>((b.ranking||0)-(a.ranking||0)))
+    },
+});
+
+export const getRankingAction = action({
+    // Validators for arguments.
+    args: {},
+
+    handler: async (ctx, args) => {
+        try {
+            const data: PersistedRanking[] = await ctx.runQuery(api.myFunctions.getRanking);
+            return data
+        } catch (e) {
+            console.log(e)
+        }
+    },
+});
+
 
 export const getGroups = query({
     args: {},
@@ -258,9 +294,7 @@ function setGame(teamName: string, game: {
 }
 
 export const doRanking = action({
-    args: {
-        slug: v.string()
-    },
+    args: {},
 
 
     handler: async (ctx, args) => {
