@@ -91,7 +91,7 @@ export const getRanking = query({
             const rankingList = await ctx.db
                 .query("ranking")
                 .collect();
-            return rankingList.toSorted((a,b)=>((b.ranking||0)-(a.ranking||0)))
+            return rankingList.toSorted((a,b)=>((a.ranking||0)-(b.ranking||0)))
     },
 });
 
