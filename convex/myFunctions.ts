@@ -336,7 +336,7 @@ export const doRanking = action({
                     results.set(game.team2, game2)
                 }
             });
-            const a: {
+            let sortedRanking: {
                 teamName: string,
                 ranking?: number,
                 points: number,
@@ -345,11 +345,28 @@ export const doRanking = action({
                 lostGames: number,
                 gamesTotalPoints: number,
             }[] = []
-            results.forEach((value) => (a.push({...value})))
-            await ctx.runMutation(api.myFunctions.generateRanking, {
-                ranking: a
+            results.forEach((value) => (sortedRanking.push({...value})))
+            sortedRanking = sortedRanking.toSorted((c,d)=> {
+                if(c.points > d.points) {
+                    return -1
+                }
+                if(d.points < c.points) {
+                    return 1
+                }
+                if(d.points == c.points) {
+                    if(c.gamesTotalPoints > d.gamesTotalPoints) {
+                        return -1
+                    }
+                    if(d.gamesTotalPoints < c.gamesTotalPoints) {
+                        return 1
+                    }
+                }
+                return 0
             })
-            return a
+            await ctx.runMutation(api.myFunctions.generateRanking, {
+                ranking: sortedRanking
+            })
+            return sortedRanking
         } catch (e) {
             console.error(e)
         }
