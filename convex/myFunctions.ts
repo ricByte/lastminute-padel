@@ -279,6 +279,7 @@ export const doRanking = action({
                 gamesTotalPoints: number,
             }> = new Map();
             allGames?.forEach((game) => {
+                console.log('Starting logic for game', game)
                 if (game.winner) {
                     let loser = {
                         name: game.team1,
@@ -288,9 +289,7 @@ export const doRanking = action({
                         name: game.team2,
                         points: game.pointsTeam2
                     }
-                    const team1 = game.team1;
-                    const team2 = game.team2;
-                    if (game.winner == team2) {
+                    if (game.winner === game.team1) {
                         winner = {...loser}
                         loser = {
                             name: game.team2,
@@ -305,7 +304,7 @@ export const doRanking = action({
                     console.log(`loserSaved:${JSON.stringify(loserSaved)}`)
                     console.log("assignment")
                     const value = {
-                        teamName: team1,
+                        teamName: winner.name,
                         points: (winnerSaved?.points || 0) + calculatePoints(game.pointsTeam2!, game.pointsTeam1!),
                         games: (winnerSaved?.games || 0) + 1,
                         wonGames: (winnerSaved?.wonGames || 0) + 1,
@@ -314,7 +313,7 @@ export const doRanking = action({
                     };
                     results.set(game.winner, value)
                     const value1 = {
-                        teamName: team2,
+                        teamName: loser.name,
                         points: (loserSaved?.points || 0),
                         games: (loserSaved?.games || 0) + 1,
                         wonGames: (loserSaved?.wonGames || 0),
@@ -323,13 +322,18 @@ export const doRanking = action({
                     };
                     results.set(loser.name, value1)
 
-                    console.log(`winner persited:${JSON.stringify(value)}`)
-                    console.log(`loser persisted:${JSON.stringify(value1)}`)
+                    console.log(`winner persited(${game.winner}):${JSON.stringify(value)}`)
+                    console.log(`loser persisted(${loser.name}):${JSON.stringify(value1)}`)
                 } else {
                     const team1 = results.get(game.team1);
                     const team2  = results.get(game.team2);
-                    results.set(game.team1, setGame(game.team1, team1))
-                    results.set(game.team2, setGame(game.team2, team2))
+
+                    const game1 = setGame(game.team1, team1);
+                    const game2 = setGame(game.team2, team2);
+                    console.log(`Set for ${game.team1}`, game1)
+                    console.log(`Set for ${game.team2}`, game2)
+                    results.set(game.team1, game1)
+                    results.set(game.team2, game2)
                 }
             });
             const a: {
