@@ -241,7 +241,7 @@ function setGame(teamName: string, game: {
     games: number;
     wonGames: number;
     lostGames: number;
-    totalPoints: number
+    gamesTotalPoints: number
 } | undefined) {
     console.log("setGame game", game)
     const newVar = {
@@ -250,7 +250,7 @@ function setGame(teamName: string, game: {
         games: (game?.games || 0),
         wonGames: (game?.wonGames || 0),
         lostGames: (game?.lostGames || 0),
-        totalPoints: (game?.totalPoints || 0)
+        gamesTotalPoints: (game?.gamesTotalPoints || 0)
     };
 
     console.log("setGame", newVar)
@@ -276,7 +276,7 @@ export const doRanking = action({
                 games: number,
                 wonGames: number,
                 lostGames: number,
-                totalPoints: number,
+                gamesTotalPoints: number,
             }> = new Map();
             allGames?.forEach((game) => {
                 if (game.winner) {
@@ -310,7 +310,7 @@ export const doRanking = action({
                         games: (winnerSaved?.games || 0) + 1,
                         wonGames: (winnerSaved?.wonGames || 0) + 1,
                         lostGames: (winnerSaved?.lostGames || 0),
-                        totalPoints: (winnerSaved?.totalPoints || 0) + winner.points!
+                        gamesTotalPoints: (winnerSaved?.gamesTotalPoints || 0) + winner.points!
                     };
                     results.set(game.winner, value)
                     const value1 = {
@@ -319,7 +319,7 @@ export const doRanking = action({
                         games: (loserSaved?.games || 0) + 1,
                         wonGames: (loserSaved?.wonGames || 0),
                         lostGames: (loserSaved?.lostGames || 0) + 1,
-                        totalPoints: (loserSaved?.totalPoints || 0) + loser.points!
+                        gamesTotalPoints: (loserSaved?.gamesTotalPoints || 0) + loser.points!
                     };
                     results.set(loser.name, value1)
 
@@ -339,7 +339,7 @@ export const doRanking = action({
                 games: number,
                 wonGames: number,
                 lostGames: number,
-                totalPoints: number,
+                gamesTotalPoints: number,
             }[] = []
             results.forEach((value) => (a.push({...value})))
             await ctx.runMutation(api.myFunctions.generateRanking, {
@@ -385,7 +385,7 @@ export const generateRanking = mutation({
             games: v.number(),
             wonGames: v.number(),
             lostGames: v.number(),
-            totalPoints: v.number(),
+            gamesTotalPoints: v.number(),
         }))
     },
     handler: async (ctx, args) => {

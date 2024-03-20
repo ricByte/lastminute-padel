@@ -45,7 +45,7 @@ export default defineSchema(
         games: v.number(),
         wonGames: v.number(),
         lostGames: v.number(),
-        totalPoints: v.number()
+        gamesTotalPoints: v.number()
     })
   },
   // If you ever get an error about schema mismatch
