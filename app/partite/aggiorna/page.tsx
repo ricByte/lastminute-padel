@@ -7,6 +7,7 @@ import Link from "next/link";
 import {useAction} from "convex/react";
 import {PersistedGame} from "@/convex/myFunctions";
 import {EitherTag} from "@/lib/Either";
+import Menu from "@/components/Menu";
 
 type Game = PersistedGame & { nowPlaying: boolean }
 const PartitePage: React.FC = () => {
@@ -129,6 +130,7 @@ const PartitePage: React.FC = () => {
 
     return (
         <div className={'partite-container'}>
+            <Menu/>
             <div>
                 <h1 className={'padel-title'}>Aggiorna partite</h1>
             </div>

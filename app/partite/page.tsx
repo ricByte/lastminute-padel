@@ -6,6 +6,7 @@ import "@/app/globals.css";
 import Link from "next/link";
 import {useAction} from "convex/react";
 import {PersistedGame, PersistedPhase} from "@/convex/myFunctions";
+import Menu from "@/components/Menu";
 
 type Game = PersistedGame & { nowPlaying: boolean }
 const PartitePage: React.FC = () => {
@@ -81,6 +82,7 @@ const PartitePage: React.FC = () => {
 
     return (
         <div className={'partite-container'}>
+            <Menu/>
             <div>
                 <h1 className={'padel-title'}>Tutte le partite</h1>
             </div>

@@ -6,6 +6,7 @@ import "@/app/globals.css";
 import Link from "next/link";
 import {useAction} from "convex/react";
 import {PersistedGame} from "@/convex/myFunctions";
+import Menu from "@/components/Menu";
 
 type Game = PersistedGame & { nowPlaying: boolean }
 export default function Page({ params }: { params: { team: string } }) {
@@ -65,6 +66,7 @@ export default function Page({ params }: { params: { team: string } }) {
 
     return (
         <div className={'partite-container'}>
+            <Menu/>
             <div>
                 <h1 className={'padel-title'}>  {`Partite Team ${params.team.substring(4)}`}</h1>
             </div>

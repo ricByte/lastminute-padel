@@ -7,6 +7,7 @@ import Link from "next/link";
 import {useAction} from "convex/react";
 import {PersistedGame, PersistedPhase} from "@/convex/myFunctions";
 import {undefined} from "zod";
+import Menu from "@/components/Menu";
 
 type Game = PersistedGame & { nowPlaying: boolean }
 export default function Page({ params }: { params: { slug: string } }) {
@@ -72,6 +73,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
     return (
         <div className={'partite-container'}>
+            <Menu/>
             <div>
                 <h1 className={'padel-title'}>Partite  {phase?.label}</h1>
             </div>
