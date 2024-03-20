@@ -21,6 +21,10 @@ const ClassificaPage: React.FC = () => {
 
     }, []);
 
+    function generateSlug(teamName: string): string {
+        return `team${teamName.substring(5)}`
+    }
+
     return (
         <div className={'partite-container'}>
             <Menu/>
@@ -43,7 +47,7 @@ const ClassificaPage: React.FC = () => {
                 {ranking && ranking.map((squadra, index) => (
                     <tr key={index}>
                         <td>{squadra.ranking}</td>
-                        <td>{squadra.teamName}</td>
+                        <td><Link target="_self" href={`/partite/team/${generateSlug(squadra.teamName)}`}>{squadra.teamName}</Link></td>
                         <td>{squadra.points}</td>
                         <td>{squadra.games}</td>
                         <td>{squadra.wonGames}</td>
