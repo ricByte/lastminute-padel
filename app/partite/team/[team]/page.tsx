@@ -5,12 +5,15 @@ import {api} from "@/convex/_generated/api";
 import "@/app/globals.css";
 import Link from "next/link";
 import {useAction} from "convex/react";
-import {PersistedGame} from "@/convex/myFunctions";
+import {PersistedGame, PersistedGroup} from "@/convex/myFunctions";
 import Menu from "@/components/Menu";
 
 type Game = PersistedGame & { nowPlaying: boolean }
 export default function Page({ params }: { params: { team: string } }) {
     const actionRetrieve = useAction(api.myFunctions.getGameForTeam);
+    const actionRetrieveGroups = useAction(api.myFunctions.retrieveGroups);
+
+    const [groups, setGroups]: [PersistedGroup[]|undefined, Dispatch<SetStateAction<PersistedGroup[]|undefined>>] = useState();
     const [gamesForToday, setGamesForToday]: [Game[]|undefined, Dispatch<SetStateAction<Game[]|undefined>>] = useState();
 
     function addNowPlaying(persistedGames: PersistedGame[]|undefined|Game[]): Game[]|undefined {
@@ -37,6 +40,19 @@ export default function Page({ params }: { params: { team: string } }) {
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
     }, []);
 
+
+
+    useEffect(()=> {
+        const callback = () => {
+            actionRetrieveGroups()
+                .then(r => {
+                    if(r) setGroups(r)
+                })
+                .catch(reason => console.log(reason))
+        };
+        callback();
+    }, [params.team]);
+
     useEffect(() => {
         // Controlla l'orario corrente e imposta lo stato di nowPlaying
         const interval = setInterval(() => {
@@ -46,29 +62,21 @@ export default function Page({ params }: { params: { team: string } }) {
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
     }, [gamesForToday]);
 
-  
-
-    // const performMyAction = useMutation(api.myFunctions.addGames);
-    // const addGame = () => {
-    //     performMyAction({
-    //         endDate: "2024-03-10T17:30:00.000Z",
-    //         startDate: "2024-03-12T18:00:00.000Z",
-    //         team1: "Team1",
-    //         team2: "Team2"
-    //     }).then((r)=>console.log(r))
-    //         .catch(()=>console.log("KO"))
-    // };
-    // const performMyAction2 = useAction(api.myFunctions.retrieveGames);
-    // const retrieveGames = () => {
-    //     performMyAction2({date: new Date().toISOString()}).then((r)=>console.log(r))
-    //         .catch(()=>console.log("KO"))
-    // };
-
+    const groupInfo = function (team: string): { name: string; members: string[]; id?: string } {
+        return groups && groups.flatMap((g) => {
+                return g.teams.find(
+                    (t) => {
+                        return t.name === team;
+                    })
+            }
+        ).find((f)=>!!f) || {name:"No members", members:[], id: ""};
+    }
     return (
         <div className={'partite-container'}>
             <Menu/>
             <div>
                 <h1 className={'padel-title'}>  {`Partite Team ${params.team.substring(4)}`}</h1>
+                <h4>{groupInfo(`Team ${params.team.substring(4)}`)?.members.join("-")}</h4>
             </div>
             <div className={'partita-grid'}>
                 {gamesForToday?.map((partita, index) => {
