@@ -407,6 +407,43 @@ export const doRanking = action({
 
     },
 });
+
+export const doRankingForGroups = action({
+    args: {},
+
+
+    handler: async (ctx, args) => {
+
+
+        try {
+            console.log(`Retrieving ranking for`, args);
+            const ranking: PersistedRanking[] = await ctx.runQuery(api.myFunctions.getRanking);
+            const groups: PersistedGroup[] = await ctx.runQuery(api.myFunctions.getGroups);
+            const result: {
+                _creationTime: number;
+                teams: { name: string; members: string[]; id?: string }[];
+                name: string;
+                ranking: (PersistedRanking)[];
+                _id: Id<"groups">
+            }[] = groups.map((g) => {
+                return {
+                    ...g,
+                    ranking: g.teams.map((team) => {
+                        return ranking.find((r) => r.teamName === team.name)!
+                    })?.toSorted((a, b) => (a?.ranking || 999) - (b?.ranking || 999))
+
+                }
+            });
+            await ctx.runMutation(api.myFunctions.generateRankingGroups, {
+                groups: result
+            })
+            return result
+        } catch (e) {
+            console.error(e)
+        }
+
+    },
+});
 export const getGame = query({
     args: {id: v.id("games")},
     handler: async (ctx, args) => {
@@ -451,6 +488,32 @@ export const generateRanking = mutation({
                 ranking: index
             })
         }
+    },
+});
+
+
+export const generateRankingGroups = mutation({
+    args: {
+        groups: v.array(v.object({
+            _creationTime: v.number(),
+            teams: v.array(v.object({ name: v.string(), members: v.array(v.string()), id: v.optional(v.string()) })),
+            name: v.string(),
+            ranking: v.array(v.object({
+                teamName: v.string(),
+                ranking : v.optional(v.number()),
+                points: v.number(),
+                games: v.number(),
+                wonGames: v.number(),
+                lostGames: v.number(),
+                gamesTotalPoints: v.number(),
+            })),
+            _id: v.id("groups")
+        }))
+    },
+    handler: async (ctx, args) => {
+            await Promise.all(args.groups.map(async (g) => {
+                await ctx.db.insert("rankingGroups", g)
+            }))
     },
 });
 

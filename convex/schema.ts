@@ -46,6 +46,19 @@ export default defineSchema(
         wonGames: v.number(),
         lostGames: v.number(),
         gamesTotalPoints: v.number()
+    }),
+      rankingGroups:defineTable({
+              teams: v.array(v.object({ name: v.string(), members: v.array(v.string()), id: v.optional(v.string()) })),
+              name: v.string(),
+              ranking: v.array(v.object({
+                  teamName: v.string(),
+                  ranking : v.optional(v.number()),
+                  points: v.number(),
+                  games: v.number(),
+                  wonGames: v.number(),
+                  lostGames: v.number(),
+                  gamesTotalPoints: v.number(),
+              })),
     })
   },
   // If you ever get an error about schema mismatch
