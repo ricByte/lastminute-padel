@@ -109,6 +109,30 @@ export const getRankingAction = action({
     },
 });
 
+export const getRankingForGroups = query({
+    args: {},
+    handler: async (ctx, args) => {
+            const rankingList = await ctx.db
+                .query("ranking")
+                .collect();
+            return rankingList.toSorted((a,b)=>((a.ranking||0)-(b.ranking||0)))
+    },
+});
+
+export const getRankingForGroupsAction = action({
+    // Validators for arguments.
+    args: {},
+
+    handler: async (ctx, args) => {
+        try {
+            const data: PersistedRanking[] = await ctx.runQuery(api.myFunctions.getRankingForGroups);
+            return data
+        } catch (e) {
+            console.log(e)
+        }
+    },
+});
+
 
 export const getGroups = query({
     args: {},
@@ -506,6 +530,8 @@ export const generateRankingGroups = mutation({
                 wonGames: v.number(),
                 lostGames: v.number(),
                 gamesTotalPoints: v.number(),
+                _creationTime: v.number(),
+                _id: v.id("ranking")
             })),
             _id: v.id("groups")
         }))
