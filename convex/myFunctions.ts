@@ -48,6 +48,23 @@ export type PersistedRanking = {
     lostGames: number
     gamesTotalPoints: number
 }
+export type RankingGroup = {
+    teams: { name: string; members: string[]; id?: string }[];
+    name: string;
+    ranking: ({
+        teamName: string
+        ranking?: number
+        points: number
+        games: number
+        wonGames: number
+        lostGames: number
+        gamesTotalPoints: number
+    })[];
+}
+export type PersistedRankingGroup = {
+    _creationTime: number;
+    _id: Id<"rankingGroups">
+} & RankingGroup;
 export const gamesForDay = query({
     args: {
         date: v.optional(v.any()),
@@ -112,10 +129,9 @@ export const getRankingAction = action({
 export const getRankingForGroups = query({
     args: {},
     handler: async (ctx, args) => {
-            const rankingList = await ctx.db
-                .query("ranking")
-                .collect();
-            return rankingList.toSorted((a,b)=>((a.ranking||0)-(b.ranking||0)))
+        return (await ctx.db
+                .query("rankingGroups")
+                .collect())
     },
 });
 
@@ -125,7 +141,7 @@ export const getRankingForGroupsAction = action({
 
     handler: async (ctx, args) => {
         try {
-            const data: PersistedRanking[] = await ctx.runQuery(api.myFunctions.getRankingForGroups);
+            const data: PersistedRankingGroup[] = await ctx.runQuery(api.myFunctions.getRankingForGroups);
             return data
         } catch (e) {
             console.log(e)
@@ -443,18 +459,24 @@ export const doRankingForGroups = action({
             console.log(`Retrieving ranking for`, args);
             const ranking: PersistedRanking[] = await ctx.runQuery(api.myFunctions.getRanking);
             const groups: PersistedGroup[] = await ctx.runQuery(api.myFunctions.getGroups);
-            const result: {
-                _creationTime: number;
-                teams: { name: string; members: string[]; id?: string }[];
-                name: string;
-                ranking: (PersistedRanking)[];
-                _id: Id<"groups">
-            }[] = groups.map((g) => {
+            const result: RankingGroup[] = groups.map((g) => {
                 return {
-                    ...g,
-                    ranking: g.teams.map((team) => {
-                        return ranking.find((r) => r.teamName === team.name)!
-                    })?.toSorted((a, b) => (a?.ranking || 999) - (b?.ranking || 999))
+                    teams: g.teams,
+                    name: g.name,
+                    ranking: {
+                        ...g.teams.map((team) => {
+                            const persistedRanking = ranking.find((r) => r.teamName === team.name)!;
+                            return {
+                                teamName: persistedRanking.teamName,
+                                ranking: persistedRanking.ranking,
+                                points: persistedRanking.points,
+                                games: persistedRanking.games,
+                                wonGames: persistedRanking.wonGames,
+                                lostGames: persistedRanking.lostGames,
+                                gamesTotalPoints: persistedRanking.gamesTotalPoints,
+                            }
+                        })?.toSorted((a, b) => (a?.ranking || 999) - (b?.ranking || 999))
+                    }
 
                 }
             });
@@ -519,7 +541,6 @@ export const generateRanking = mutation({
 export const generateRankingGroups = mutation({
     args: {
         groups: v.array(v.object({
-            _creationTime: v.number(),
             teams: v.array(v.object({ name: v.string(), members: v.array(v.string()), id: v.optional(v.string()) })),
             name: v.string(),
             ranking: v.array(v.object({
@@ -530,10 +551,7 @@ export const generateRankingGroups = mutation({
                 wonGames: v.number(),
                 lostGames: v.number(),
                 gamesTotalPoints: v.number(),
-                _creationTime: v.number(),
-                _id: v.id("ranking")
             })),
-            _id: v.id("groups")
         }))
     },
     handler: async (ctx, args) => {
