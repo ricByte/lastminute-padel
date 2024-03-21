@@ -10,6 +10,8 @@ const Menu: React.FC = () => {
             <ul className={'menuList'}>
                 <li className={'menuItem'}><Link href="/">Home</Link></li>
                 <li className={'menuItem'}><Link href="/partite">Partite</Link></li>
+                <li className={'menuItem'}><Link href="/classifica">Classifica generale</Link></li>
+                <li className={'menuItem'}><Link href="/classifica/gironi">Classifica a gironi</Link></li>
             </ul>
         </nav>
     );
