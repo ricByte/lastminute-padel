@@ -174,7 +174,7 @@ export const getPhases = query({
         if(args.slug) {
             query = query.filter(q => q.eq(q.field("slug"), args.slug))
         }
-        
+
         const promise = await query
             .collect();
         console.log(promise)
@@ -463,20 +463,22 @@ export const doRankingForGroups = action({
                 return {
                     teams: g.teams,
                     name: g.name,
-                    ranking: {
-                        ...g.teams.map((team) => {
-                            const persistedRanking = ranking.find((r) => r.teamName === team.name)!;
-                            return {
-                                teamName: persistedRanking.teamName,
-                                ranking: persistedRanking.ranking,
-                                points: persistedRanking.points,
-                                games: persistedRanking.games,
-                                wonGames: persistedRanking.wonGames,
-                                lostGames: persistedRanking.lostGames,
-                                gamesTotalPoints: persistedRanking.gamesTotalPoints,
-                            }
-                        })?.toSorted((a, b) => (a?.ranking || 999) - (b?.ranking || 999))
-                    }
+                    ranking: [
+                        ...(g.teams
+                            .map((team) => {
+                                const persistedRanking = ranking.find((r) => r.teamName === team.name)!;
+                                return {
+                                    teamName: persistedRanking.teamName,
+                                    ranking: persistedRanking.ranking,
+                                    points: persistedRanking.points,
+                                    games: persistedRanking.games,
+                                    wonGames: persistedRanking.wonGames,
+                                    lostGames: persistedRanking.lostGames,
+                                    gamesTotalPoints: persistedRanking.gamesTotalPoints,
+                                }
+                            })
+                            .toSorted((a, b) => (a?.ranking || 999) - (b?.ranking || 999)))
+                    ]
 
                 }
             });
