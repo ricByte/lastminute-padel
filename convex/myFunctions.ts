@@ -480,6 +480,7 @@ export const doRankingForGroups = action({
 
                 }
             });
+            console.log("Rank generators", result)
             await ctx.runMutation(api.myFunctions.generateRankingGroups, {
                 groups: result
             })
