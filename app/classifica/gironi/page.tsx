@@ -33,35 +33,38 @@ const ClassificaPage: React.FC = () => {
                 <h1 className={'padel-title'}>Classifica generale</h1>
             </div>
             {ranking && ranking.map((squadra, index) => (
-                <table className={'classifica-table'} key={`gironisquadra${index}`}>
-                    <thead>
-                    <tr>
-                        <th>Posizione</th>
-                        <th>Squadra</th>
-                        <th>Punti</th>
-                        <th>Partite giocate</th>
-                        <th>Partite vinte</th>
-                        <th>Partite perse</th>
-                        <th>Punteggio totale(in tutte le partite)</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {squadra.ranking && squadra.ranking.map((team, index) => (
-                        <tr key={index}>
-                            <td>{team.ranking}</td>
-                            <td><Link target="_self"
-                                      href={`/partite/team/${generateSlug(team.teamName)}`}>{team.teamName}</Link>
-                            </td>
-                            <td>{team.points}</td>
-                            <td>{team.games}</td>
-                            <td>{team.wonGames}</td>
-                            <td>{team.lostGames}</td>
-                            <td>{team.gamesTotalPoints}</td>
+                <div key={`gironisquadra${index}`}>
+                    <p>{squadra.name}</p>
+                    <table className={'classifica-table'} >
+                        <thead>
+                        <tr>
+                            <th>Posizione</th>
+                            <th>Squadra</th>
+                            <th>Punti</th>
+                            <th>Partite giocate</th>
+                            <th>Partite vinte</th>
+                            <th>Partite perse</th>
+                            <th>Punteggio totale(in tutte le partite)</th>
                         </tr>
-                    ))}
+                        </thead>
+                        <tbody>
+                        {squadra.ranking && squadra.ranking.map((team, index) => (
+                            <tr key={index}>
+                                <td>{team.ranking}</td>
+                                <td><Link target="_self"
+                                          href={`/partite/team/${generateSlug(team.teamName)}`}>{team.teamName}</Link>
+                                </td>
+                                <td>{team.points}</td>
+                                <td>{team.games}</td>
+                                <td>{team.wonGames}</td>
+                                <td>{team.lostGames}</td>
+                                <td>{team.gamesTotalPoints}</td>
+                            </tr>
+                        ))}
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             ))}
             <div style={{marginTop: 20}}>
                 <Link href="/">Torna alla home</Link>
