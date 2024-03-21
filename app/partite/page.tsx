@@ -5,16 +5,18 @@ import {api} from "@/convex/_generated/api";
 import "@/app/globals.css";
 import Link from "next/link";
 import {useAction} from "convex/react";
-import {PersistedGame, PersistedPhase} from "@/convex/myFunctions";
+import {PersistedGame, PersistedGroup, PersistedPhase} from "@/convex/myFunctions";
 import Menu from "@/components/Menu";
 
 type Game = PersistedGame & { nowPlaying: boolean }
 const PartitePage: React.FC = () => {
     const actionRetrieve = useAction(api.myFunctions.retrieveGames);
     const actionRetrievePhases = useAction(api.myFunctions.getPhasesAction);
+    const actionRetrieveGroups = useAction(api.myFunctions.retrieveGroups);
 
     const [gamesForToday, setGamesForToday]: [Game[]|undefined, Dispatch<SetStateAction<Game[]|undefined>>] = useState();
     const [phases, setPhases]: [PersistedPhase[]|undefined, Dispatch<SetStateAction<PersistedPhase[]|undefined>>] = useState();
+    const [groups, setGroups]: [PersistedGroup[]|undefined, Dispatch<SetStateAction<PersistedGroup[]|undefined>>] = useState();
 
     function addNowPlaying(persistedGames: PersistedGame[]|undefined|Game[]): Game[]|undefined {
         const now = new Date().toISOString();
@@ -51,6 +53,17 @@ const PartitePage: React.FC = () => {
         callback();
     }, []);
 
+    useEffect(()=> {
+        const callback = () => {
+            actionRetrieveGroups({})
+                .then(g => {
+                    if(g) setGroups(g)
+                })
+                .catch(reason => console.error(reason))
+        };
+        callback();
+    }, []);
+
     useEffect(() => {
         // Controlla l'orario corrente e imposta lo stato di nowPlaying
         const interval = setInterval(() => {
@@ -64,21 +77,15 @@ const PartitePage: React.FC = () => {
 
     }, [gamesForToday]);
 
-    // const performMyAction = useMutation(api.myFunctions.addGames);
-    // const addGame = () => {
-    //     performMyAction({
-    //         endDate: "2024-03-10T17:30:00.000Z",
-    //         startDate: "2024-03-12T18:00:00.000Z",
-    //         team1: "Team1",
-    //         team2: "Team2"
-    //     }).then((r)=>console.log(r))
-    //         .catch(()=>console.log("KO"))
-    // };
-    // const performMyAction2 = useAction(api.myFunctions.retrieveGames);
-    // const retrieveGames = () => {
-    //     performMyAction2({date: new Date().toISOString()}).then((r)=>console.log(r))
-    //         .catch(()=>console.log("KO"))
-    // };
+    const groupInfo = function (team: string): { name: string; members: string[]; id?: string } {
+        return groups && groups.flatMap((g) => {
+            return g.teams.find(
+                (t) => {
+                    return t.name === team;
+                })
+            }
+        ).find((f)=>!!f) || {name:"No members", members:[], id: ""};
+    }
 
     return (
         <div className={'partite-container'}>
@@ -98,7 +105,18 @@ const PartitePage: React.FC = () => {
                     return (
                         <div key={`game${index}`} className={'partita-item'}>
                             <p className={'partita-details'}>
-                                {partita.team1} vs {partita.team2} @{new Date(partita.startDate).toLocaleString()}
+                                <div>
+                                    {partita.team1}({groupInfo(partita.team1)?.members.join(",")})
+                                </div>
+                                <div>
+                                    vs
+                                </div>
+                                <div>
+                                    {partita.team2}({groupInfo(partita.team2)?.members.join(",")})
+                                </div>
+                                <div>
+                                    @{new Date(partita.startDate).toLocaleString()}
+                                </div>
                             </p>
                             <p className={'partita-details'}>
                                 {partita.pointsTeam1} - {partita.pointsTeam2}
