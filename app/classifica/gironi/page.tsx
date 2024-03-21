@@ -30,7 +30,7 @@ const ClassificaPage: React.FC = () => {
         <div className={'partite-container'}>
             <Menu/>
             <div>
-                <h1 className={'padel-title'}>Classifica generale</h1>
+                <h1 className={'padel-title'}>Classifica per gironi</h1>
             </div>
             {ranking && ranking.map((squadra, index) => (
                 <div key={`gironisquadra${index}`}>
