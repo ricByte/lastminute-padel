@@ -34,7 +34,7 @@ const ClassificaPage: React.FC = () => {
             </div>
             {ranking && ranking.map((squadra, index) => (
                 <div key={`gironisquadra${index}`}>
-                    <p>{squadra.name}</p>
+                    <h2 className={'padel-subtitle'}>{squadra.name}</h2>
                     <table className={'classifica-table'} >
                         <thead>
                         <tr>

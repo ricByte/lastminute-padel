@@ -93,6 +93,12 @@
   margin-top: 10px;
 }
 
+.padel-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
 .padel-text {
   font-size: 1.2rem;
   line-height: 1.5;
