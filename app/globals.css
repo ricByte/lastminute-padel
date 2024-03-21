@@ -35,6 +35,13 @@
     --radius: 0.5rem;
   }
 
+  a {
+    text-decoration: underline;
+    :after {
+      content: "<-";
+    }
+  }
+
   @media (prefers-color-scheme: dark) {
     :root {
       --background: 240 10% 3.9%;
