@@ -51,8 +51,8 @@ const ClassificaPage: React.FC = () => {
                         <tbody>
                         {squadra.ranking && squadra.ranking.map((team, index) => (
                             <tr key={index}>
-                                <td>{team.ranking}</td>
                                 <td>{index+1}</td>
+                                <td>{team.ranking}</td>
                                 <td><Link target="_self"
                                           href={`/partite/team/${generateSlug(team.teamName)}`}>{team.teamName}</Link>
                                 </td>
