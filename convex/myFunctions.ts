@@ -534,7 +534,7 @@ export const generateRanking = mutation({
             const index = args.ranking.indexOf(ranking);
             await ctx.db.insert("ranking", {
                 ...ranking,
-                ranking: index
+                ranking: index + 1
             })
         }
     },
