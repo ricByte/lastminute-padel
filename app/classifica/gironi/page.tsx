@@ -39,7 +39,7 @@ const ClassificaPage: React.FC = () => {
                         <thead>
                         <tr>
                             <th>Posizione </th>
-                            <th>Posizione classifica generale</th>
+                            {/*<th>Posizione classifica generale</th>*/}
                             <th>Squadra</th>
                             <th>Punti</th>
                             <th>Partite giocate</th>
@@ -52,7 +52,7 @@ const ClassificaPage: React.FC = () => {
                         {squadra.ranking && squadra.ranking.map((team, index) => (
                             <tr key={index}>
                                 <td>{index+1}</td>
-                                <td>{team.ranking}</td>
+                                {/*<td>{team.ranking}</td>*/}
                                 <td><Link target="_self"
                                           href={`/partite/team/${generateSlug(team.teamName)}`}>{team.teamName}</Link>
                                 </td>
