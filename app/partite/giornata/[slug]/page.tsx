@@ -5,7 +5,7 @@ import {api} from "@/convex/_generated/api";
 import "@/app/globals.css";
 import Link from "next/link";
 import {useAction} from "convex/react";
-import {PersistedGame, PersistedPhase} from "@/convex/myFunctions";
+import {PersistedGame, PersistedGroup, PersistedPhase} from "@/convex/myFunctions";
 import {undefined} from "zod";
 import Menu from "@/components/Menu";
 
@@ -13,10 +13,12 @@ type Game = PersistedGame & { nowPlaying: boolean }
 export default function Page({ params }: { params: { slug: string } }) {
     const actionRetrieve = useAction(api.myFunctions.getGameForPhase);
     const actionRetrievePhases = useAction(api.myFunctions.getPhasesAction);
+    const actionRetrieveGroups = useAction(api.myFunctions.retrieveGroups);
 
     const [gamesForToday, setGamesForToday]: [Game[]|undefined, Dispatch<SetStateAction<Game[]|undefined>>] = useState();
     const [phases, setPhases]: [PersistedPhase[]|undefined, Dispatch<SetStateAction<PersistedPhase[]|undefined>>] = useState();
     const [phase, setPhase]: [PersistedPhase|undefined, Dispatch<SetStateAction<PersistedPhase|undefined>>] = useState();
+    const [groups, setGroups]: [PersistedGroup[]|undefined, Dispatch<SetStateAction<PersistedGroup[]|undefined>>] = useState();
 
     function addNowPlaying(persistedGames: PersistedGame[]|undefined|Game[]): Game[]|undefined {
         const now = new Date().toISOString();
@@ -71,6 +73,27 @@ export default function Page({ params }: { params: { slug: string } }) {
         callback();
     }, []);
 
+    useEffect(()=> {
+        const callback = () => {
+            actionRetrieveGroups({})
+                .then(g => {
+                    if(g) setGroups(g)
+                })
+                .catch(reason => console.error(reason))
+        };
+        callback();
+    }, []);
+
+    const groupInfo = function (team: string): { name: string; members: string[]; id?: string } {
+        return groups && groups.flatMap((g) => {
+                return g.teams.find(
+                    (t) => {
+                        return t.name === team;
+                    })
+            }
+        ).find((f)=>!!f) || {name:"No members", members:[], id: ""};
+    }
+
     return (
         <div className={'partite-container'}>
             <Menu/>
@@ -89,11 +112,21 @@ export default function Page({ params }: { params: { slug: string } }) {
                     })}
                 </div>
                 {gamesForToday?.map((partita, index) => {
-                    const startDate = new Date(partita.startDate);
                     return (
                         <div key={index} className={'partita-item'}>
                             <p className={'partita-details'}>
-                                {partita.team1} vs {partita.team2} @{startDate.toLocaleString()}
+                                <div>
+                                    {partita.team1}({groupInfo(partita.team1)?.members.join(",")})
+                                </div>
+                                <div>
+                                    vs
+                                </div>
+                                <div>
+                                    {partita.team2}({groupInfo(partita.team2)?.members.join(",")})
+                                </div>
+                                <div>
+                                    @{new Date(partita.startDate).toLocaleString()}
+                                </div>
                             </p>
                             <p className={'partita-details'}>
                                 {partita.pointsTeam1} - {partita.pointsTeam2}
