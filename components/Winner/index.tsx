@@ -12,6 +12,7 @@ export const Winner: React.FC<WinnerProps> = () => {
         <div className={'vincitore-container'}>
             <FaTrophy className={'trophy-icon'} />
             <div className={'vincitore-info'}>
+                <h1>Vincitore torneo 2024</h1>
                 <h2>Team 20</h2>
                 <h3>fabio.zecchini@lastminute.com </h3>
                 <h3>gianluca.boriani@lastminute.com</h3>
