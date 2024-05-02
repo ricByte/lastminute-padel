@@ -7,6 +7,7 @@ import Menu from "@/components/Menu";
 import {useAction} from "convex/react";
 import {api} from "@/convex/_generated/api";
 import {PersistedGroup} from "@/convex/myFunctions";
+import { Winner } from "@/components/Winner";
 
 
 const PadelPage: React.FC = () => {
@@ -27,6 +28,7 @@ const PadelPage: React.FC = () => {
     return (
         <div className={'padel-container'}>
             <Menu/>
+            <Winner />
             <div className={'padel-intro'}>
                 <h1 className={'padel-title'}>Benvenuti al sito ufficiale del torneo di padel lastminute 2024 !</h1>
                 <p className={'padel-text'}>
