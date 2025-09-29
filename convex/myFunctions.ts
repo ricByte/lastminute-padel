@@ -161,6 +161,7 @@ export const getGroups = query({
         year: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
+        console.log(`Anno ${JSON.stringify(args)}`, args.year == 2025)
         const promise = await ctx.db
             .query("groups")
             .filter((q) =>
