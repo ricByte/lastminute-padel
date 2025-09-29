@@ -14,6 +14,12 @@ export type PersistedGroup = {
     name: string
     teams: { name: string; members: string[]; id?: string }[];
 }
+export type PersistedEdition = {
+    _id: Id<"edition">;
+    _creationTime: number;
+    year: number;
+    active: boolean;
+}
 
 export type PersistedGame = {
     _id: Id<"games">;
@@ -155,6 +161,19 @@ export const getGroups = query({
     handler: async (ctx) => {
         const promise = await ctx.db
             .query("groups")
+            .order("asc")
+            .collect();
+        console.log(promise)
+        return promise;
+    },
+});
+
+
+export const getEditions = query({
+    args: {},
+    handler: async (ctx) => {
+        const promise = await ctx.db
+            .query("edition")
             .order("asc")
             .collect();
         console.log(promise)
@@ -658,6 +677,26 @@ export const retrieveGroups = action({
             const data: PersistedGroup[] = await ctx.runQuery(api.myFunctions.getGroups);
             console.log(data);
             return data
+        } catch (e) {
+            console.log(e)
+        }
+
+    },
+});
+
+export const retrieveEdition = action({
+    // Validators for arguments.
+    args: {},
+
+    handler: async (ctx, args) => {
+
+        try {
+            console.log(`Retrieving edition`);
+            const data: PersistedEdition[] = await ctx.runQuery(api.myFunctions.getEditions);
+            console.log(data);
+            return data
+                .filter(value => value.active)
+                .pop()
         } catch (e) {
             console.log(e)
         }
