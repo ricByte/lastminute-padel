@@ -19,7 +19,7 @@ const PadelPage: React.FC = () => {
         const effect = async () => {
             const ed = await actionRetrieveEdition();
             if (ed) setEdition(ed)
-            const newVar = await actionRetrieve();
+            const newVar = await actionRetrieve({year: edition?.year});
             if(newVar) setGroups(newVar)
         };
         effect()

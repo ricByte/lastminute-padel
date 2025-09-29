@@ -157,10 +157,15 @@ export const getRankingForGroupsAction = action({
 
 
 export const getGroups = query({
-    args: {},
-    handler: async (ctx) => {
+    args: {
+        year: v.optional(v.number()),
+    },
+    handler: async (ctx, args) => {
         const promise = await ctx.db
             .query("groups")
+            .filter((q) =>
+                q.eq(q.field("edition"), args.year),
+            )
             .order("asc")
             .collect();
         console.log(promise)
@@ -477,7 +482,7 @@ export const doRankingForGroups = action({
         try {
             console.log(`Retrieving ranking for`, args);
             const ranking: PersistedRanking[] = await ctx.runQuery(api.myFunctions.getRanking);
-            const groups: PersistedGroup[] = await ctx.runQuery(api.myFunctions.getGroups);
+            const groups: PersistedGroup[] = await ctx.runQuery(api.myFunctions.getGroups, {});
             const result: RankingGroup[] = groups.map((g) => {
                 return {
                     teams: g.teams,
@@ -656,7 +661,9 @@ export const retrieveGames = action({
 
 export const retrieveGroups = action({
     // Validators for arguments.
-    args: {},
+    args: {
+        year: v.optional(v.number()),
+    },
 
     // Action implementation.
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -674,7 +681,7 @@ export const retrieveGroups = action({
 
         try {
             console.log(`Retrieving groups`);
-            const data: PersistedGroup[] = await ctx.runQuery(api.myFunctions.getGroups);
+            const data: PersistedGroup[] = await ctx.runQuery(api.myFunctions.getGroups, args);
             console.log(data);
             return data
         } catch (e) {
