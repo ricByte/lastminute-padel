@@ -59,6 +59,10 @@ export default defineSchema(
                   lostGames: v.number(),
                   gamesTotalPoints: v.number(),
               })),
+      }),
+      edition: defineTable({
+          year: v.number(),
+          active: v.boolean(),
     })
   },
   // If you ever get an error about schema mismatch
