@@ -13,6 +13,8 @@ export type PersistedGroup = {
     _creationTime: number;
     name: string
     teams: { name: string; members: string[]; id?: string }[];
+    edition?: number;
+    category?: string;
 }
 export type PersistedEdition = {
     _id: Id<"edition">;
