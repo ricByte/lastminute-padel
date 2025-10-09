@@ -38,7 +38,8 @@ export default defineSchema(
         phase: defineTable({
             day: v.string(),
             label: v.string(),
-            slug: v.string()
+            slug: v.string(),
+            edition: v.optional(v.string())
         }),
         ranking: defineTable({
             teamName: v.string(),
@@ -65,6 +66,7 @@ export default defineSchema(
         edition: defineTable({
             year: v.number(),
             active: v.boolean(),
+            id: v.string()
         })
     },
     // If you ever get an error about schema mismatch
