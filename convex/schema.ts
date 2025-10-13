@@ -21,7 +21,8 @@ export default defineSchema(
             team2: v.string(),
             pointsTeam1: v.optional(v.number()),
             pointsTeam2: v.optional(v.number()),
-            winner: v.optional(v.string())
+            winner: v.optional(v.string()),
+            edition: v.optional(v.string())
         }),
         groups: defineTable({
             name: v.string(),
@@ -66,7 +67,6 @@ export default defineSchema(
         edition: defineTable({
             year: v.number(),
             active: v.boolean(),
-            id: v.string()
         })
     },
     // If you ever get an error about schema mismatch

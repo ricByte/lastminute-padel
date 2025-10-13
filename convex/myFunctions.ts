@@ -33,6 +33,7 @@ export type PersistedGame = {
     startDate: string;
     team1: string;
     team2: string;
+    edition?: string | undefined;
 }
 export type PersistedPhase = {
     _id: Id<"phase">;
@@ -76,6 +77,7 @@ export type PersistedRankingGroup = {
 export const gamesForDay = query({
     args: {
         date: v.optional(v.any()),
+        edition: v.optional(v.any()),
     },
     handler: async (ctx, args) => {
         if(args.date) {
@@ -99,6 +101,41 @@ export const gamesForDay = query({
                 .collect();
             console.log(promise)
             return promise;
+        } else if (args.edition) {
+            console.log(`edition is ${args.edition}`)
+            if (args.date) {
+                console.log(`games for today: ${args.date}`)
+                const today = new Date(args.date);
+                console.log(`today is: ${today.toISOString()}`)
+                today.setHours(0, 0, 0, 0)
+                console.log(`today at night: ${today.toISOString()}`)
+                const tomorrow = new Date(today.getTime());
+                tomorrow.setDate(today.getDate() + 1)
+                console.log(`tomorrow at night: ${tomorrow.toISOString()}`)
+                const promise = await ctx.db
+                    .query("games")
+                    .filter((q) =>
+                        q.and(
+                            q.gte(q.field("startDate"), today.toISOString()),
+                            q.lte(q.field("endDate"), tomorrow.toISOString()),
+                            q.eq(q.field("edition"), args.edition),
+                        )
+                    )
+                    .order("asc")
+                    .collect();
+                console.log(promise)
+                return promise;
+            } else {
+                const promise = await ctx.db
+                    .query("games")
+                    .filter((q) =>
+                        q.eq(q.field("edition"), args.edition),
+                    )
+                    .order("asc")
+                    .collect();
+                console.log(promise)
+                return promise;
+            }
         } else {
             console.log(`date for today is empty`)
             const promise = await ctx.db
@@ -191,15 +228,24 @@ export const getEditions = query({
 
 export const getPhases = query({
     args: {
-        slug: v.optional(v.string())
+        slug: v.optional(v.string()),
+        edition: v.optional(v.number())
     },
     handler: async (ctx, args) => {
+        const today = new Date(`${args?.edition ? args.edition : 2025}-01-01T00:00:00Z`);
+
         let query = ctx.db
             .query("phase")
+            .filter(q => q.gte(q.field("day"), today.toISOString()))
             .order("asc");
 
         if(args.slug) {
-            query = query.filter(q => q.eq(q.field("slug"), args.slug))
+            query = query.filter(q =>
+                q.and(
+                    q.eq(q.field("slug"), args.slug),
+                    q.gte(q.field("day"), today.toISOString()),
+                )
+            )
         }
 
         const promise = await query
@@ -262,7 +308,8 @@ export const getGameForTeam = action({
 export const getPhasesAction = action({
     // Validators for arguments.
     args: {
-        slug:v.optional(v.string())
+        slug: v.optional(v.string()),
+        edition: v.optional(v.number())
     },
 
     handler: async (ctx, args) => {
@@ -634,6 +681,7 @@ export const retrieveGames = action({
     // Validators for arguments.
     args: {
         date: v.optional(v.any()),
+        edition: v.optional(v.string()),
     },
 
     // Action implementation.
