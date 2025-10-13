@@ -7,16 +7,19 @@ import Link from "next/link";
 import {useAction} from "convex/react";
 import {PersistedGame, PersistedGroup, PersistedPhase} from "@/convex/myFunctions";
 import Menu from "@/components/Menu";
+import {undefined} from "zod";
 
 type Game = PersistedGame & { nowPlaying: boolean }
 const PartitePage: React.FC = () => {
-    const actionRetrieve = useAction(api.myFunctions.retrieveGames);
+    const actionRetrieveEdition = useAction(api.myFunctions.retrieveEdition);
+    const actionRetrieveGames = useAction(api.myFunctions.retrieveGames);
     const actionRetrievePhases = useAction(api.myFunctions.getPhasesAction);
     const actionRetrieveGroups = useAction(api.myFunctions.retrieveGroups);
 
     const [gamesForToday, setGamesForToday]: [Game[]|undefined, Dispatch<SetStateAction<Game[]|undefined>>] = useState();
     const [phases, setPhases]: [PersistedPhase[]|undefined, Dispatch<SetStateAction<PersistedPhase[]|undefined>>] = useState();
     const [groups, setGroups]: [PersistedGroup[]|undefined, Dispatch<SetStateAction<PersistedGroup[]|undefined>>] = useState();
+    const [edition, setEdition]: [number | undefined, Dispatch<SetStateAction<number | undefined>>] = useState();
 
     function addNowPlaying(persistedGames: PersistedGame[]|undefined|Game[]): Game[]|undefined {
         const now = new Date().toISOString();
@@ -29,40 +32,55 @@ const PartitePage: React.FC = () => {
         });
     }
 
+    useEffect(() => {
+        const callback = () => {
+            actionRetrieveEdition()
+                .then(ed => {
+                    if (ed) {
+                        setEdition(ed.year)
+                    } else {
+                        setEdition(2025)
+                    }
+                })
+                .catch(reason => console.log(reason))
+        };
+        callback();
+    }, [actionRetrieveEdition]);
+
     useEffect(()=> {
         const callback = () => {
-            actionRetrieve({})
+            actionRetrieveGames({edition: edition?.toString()})
                 .then(newVar => {
                     if(newVar) setGamesForToday(addNowPlaying(newVar))
                 })
                 .catch(reason => console.log(reason))
         };
-        const interval = setInterval( callback, 60*1000); // Controlla ogni minuto
+        const interval = setInterval(callback, 60 * 1000); // Controlla ogni minuto
         callback();
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
-    }, []);
+    }, [actionRetrieveGames, edition]);
 
     useEffect(()=> {
         const callback = () => {
-            actionRetrievePhases({})
+            actionRetrievePhases({edition: edition})
                 .then(phases => {
                     if(phases) setPhases(phases)
                 })
                 .catch(reason => console.log(reason))
         };
         callback();
-    }, []);
+    }, [actionRetrievePhases, edition]);
 
     useEffect(()=> {
         const callback = () => {
-            actionRetrieveGroups({})
+            actionRetrieveGroups({year: edition})
                 .then(g => {
                     if(g) setGroups(g)
                 })
                 .catch(reason => console.error(reason))
         };
         callback();
-    }, []);
+    }, [actionRetrieveGroups, edition]);
 
     useEffect(() => {
         // Controlla l'orario corrente e imposta lo stato di nowPlaying
@@ -71,11 +89,7 @@ const PartitePage: React.FC = () => {
         }, 1000); // Controlla ogni secondo
 
         return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
-    }, [gamesForToday]);
-
-    useEffect(() => {
-
-    }, [gamesForToday]);
+    }, [gamesForToday, edition]);
 
     const groupInfo = function (team: string): { name: string; members: string[]; id?: string } {
         return groups && groups.flatMap((g) => {

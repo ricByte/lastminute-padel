@@ -11,20 +11,32 @@ import {PersistedEdition, PersistedGroup} from "@/convex/myFunctions";
 
 const PadelPage: React.FC = () => {
     const actionRetrieve = useAction(api.myFunctions.retrieveGroups);
-    const [groups, setGroups]: [PersistedGroup[]|undefined, Dispatch<SetStateAction<PersistedGroup[]|undefined>>] = useState();
+    const [groups, setGroups]: [PersistedGroup[] | undefined, Dispatch<SetStateAction<PersistedGroup[] | undefined>>] = useState();
     const actionRetrieveEdition = useAction(api.myFunctions.retrieveEdition);
     const [edition, setEdition]: [PersistedEdition | undefined, Dispatch<SetStateAction<PersistedEdition | undefined>>] = useState();
+    const [categories, setCategories]: [(string | undefined)[] | undefined, Dispatch<SetStateAction<(string | undefined)[] | undefined>>] = useState();
 
-    useEffect(()=> {
+    function calculateCategories(groups: PersistedGroup[] | undefined) {
+        if (!groups) return undefined;
+        const categories = groups
+            .filter(it => it.category != null || it.category != undefined)
+            .map(it => it.category);
+        return [...categories]
+    }
+
+    useEffect(() => {
         const effect = async () => {
             const ed = await actionRetrieveEdition();
             if (ed) setEdition(ed)
-            const newVar = await actionRetrieve();
-            if(newVar) setGroups(newVar)
+            const newVar = await actionRetrieve({year: ed?.year});
+            if (newVar) {
+                setGroups(newVar)
+                setCategories(calculateCategories(newVar))
+            }
         };
         effect()
-            .then(()=>console.log("DONE"))
-            .catch(()=>console.log("ERROR"))
+            .then(() => console.log("DONE"))
+            .catch(() => console.log("ERROR"))
 
     }, []);
 
@@ -40,12 +52,24 @@ const PadelPage: React.FC = () => {
                 </p>
             </div>
             <div className={'padel-intro'}>
-                {groups?.map((group, index) => (
-                    <Group key={index} {...group} />
-                ))}
+                {
+                    categories?.map((category, catindex) => (
+                        <section key={catindex}>
+                            <h2 className={'padel-title'}>{category}</h2>
+                            {groups
+                                ?.filter(it => it.category == category)
+                                .map((group, index) => (
+
+                                    <Group key={index} {...group} />
+                                ))}
+                        </section>
+                    ))
+                }
+
             </div>
             <div style={{paddingLeft: '20px'}}>
-                Powered by <img style={{display:'inline'}} width="100" height="30" loading="eager" role="presentation" src="https://miro.medium.com/v2/resize:fit:1400/0*QMVr-flazwH3vviX.png" />
+                Powered by <img style={{display: 'inline'}} width="100" height="30" loading="eager" role="presentation"
+                                src="https://miro.medium.com/v2/resize:fit:1400/0*QMVr-flazwH3vviX.png"/>
             </div>
         </div>
     );

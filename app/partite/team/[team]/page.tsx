@@ -44,7 +44,7 @@ export default function Page({ params }: { params: { team: string } }) {
 
     useEffect(()=> {
         const callback = () => {
-            actionRetrieveGroups()
+            actionRetrieveGroups({})
                 .then(r => {
                     if(r) setGroups(r)
                 })
